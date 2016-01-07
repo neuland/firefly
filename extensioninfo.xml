@@ -19,6 +19,7 @@
                classprefix="Firefly"
                managername="FireflyManager"
                managersuperclass="de.hybris.platform.jalo.extension.Extension"
+	           description="Firefly Change Management"
                >
                
 
@@ -31,9 +32,7 @@
 					webroot="/firefly"
 					/>
 
-      <hmcmodule	extensionclassname="de.neuland.firefly.hmc.FireflyHMCExtension"
-					/>
-
+       <hmcmodule extensionclassname="de.neuland.firefly.hmc.FireflyHMCExtension"/>
    </extension>
       
 </extensioninfo>
