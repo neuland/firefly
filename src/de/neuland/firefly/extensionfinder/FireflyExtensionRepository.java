@@ -5,10 +5,13 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.neuland.firefly.model.FireflyExtensionModel;
+import de.neuland.firefly.model.FireflyExtensionStateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
 
 
 @Repository
@@ -34,6 +37,7 @@ public class FireflyExtensionRepository {
         Assert.hasText(name);
         FireflyExtensionModel result = new FireflyExtensionModel();
         result.setName(name);
+        result.setStates(new ArrayList<FireflyExtensionStateModel>());
         return result;
     }
 
