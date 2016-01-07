@@ -19,6 +19,7 @@ public class HybrisAdapter {
 
     public void updateSystem() throws Exception {
         Initialization.updateSystem();
+        HMCManager.getInstance().clearHMCStructure();
         eventService.publishEvent(new SystemUpdatedEvent(getTenantId()));
     }
 
