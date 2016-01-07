@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changeList xmlns="http://firefly.neuland-bfi.de/v1">
+    <change file="change-1.xml"/>
+    <change file="change-2.xml"/>
+</changeList>

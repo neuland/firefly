@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2012 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+
+  
+-->
+
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="items.xsd">
+
+    <relations>
+        <relation code="FireflyExtensionStateRelation"
+                  generate="true"
+                  localized="false"
+                  autocreate="true">
+            <sourceElement type="FireflyExtensionState" qualifier="states" cardinality="many" collectiontype="list" ordered="true" >
+                <modifiers  partof="true" write="true" />
+            </sourceElement>
+            <targetElement type="FireflyExtension" qualifier="extension" cardinality="one">
+                <modifiers optional="false"/>
+            </targetElement>
+        </relation>
+    </relations>
+
+    <itemtypes>
+        <itemtype code="FireflyChange"
+                  autocreate="true"
+                  generate="true"
+                  extends="GenericItem"
+                  jaloclass="de.neuland.firefly.jalo.FireflyChange">
+            <deployment table="FireflyChange" typecode="15000"/>
+            <attributes>
+                <attribute qualifier="filename" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+                <attribute qualifier="author" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+                <attribute qualifier="id" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+            </attributes>
+            <indexes>
+                <index name="FireflyChangeUnique" unique="true">
+                    <key attribute="filename"/>
+                    <key attribute="author"/>
+                    <key attribute="id"/>
+                </index>
+            </indexes>
+        </itemtype>
+
+        <itemtype code="FireflyExtension"
+                  autocreate="true"
+                  generate="true"
+                  extends="GenericItem"
+                  jaloclass="de.neuland.firefly.jalo.FireflyExtension">
+            <deployment table="FireflyExtension" typecode="15001"/>
+            <attributes>
+                <attribute qualifier="name" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+            </attributes>
+            <indexes>
+                <index name="FireflyExtensionUnique" unique="true">
+                    <key attribute="name"/>
+                </index>
+            </indexes>
+        </itemtype>
+
+        <itemtype code="FireflyExtensionState"
+                  autocreate="true"
+                  generate="true"
+                  extends="GenericItem"
+                  jaloclass="de.neuland.firefly.jalo.FireflyExtensionState">
+            <deployment table="FireflyExtensionState" typecode="15002"/>
+            <attributes>
+                <attribute qualifier="itemsDefinitionHash" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+                <attribute qualifier="hmcDefinitionHash" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+    </itemtypes>
+</items>

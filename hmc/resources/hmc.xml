@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="hybris.de/schemas/hmc/generic"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
+    <explorertree>
+        <group name="firefly">
+            <typeref type="FireflyExtension"/>
+        </group>
+    </explorertree>
+
+    <type name="FireflyExtension">
+        <organizer>
+            <search autoperform="true">
+                <condition attribute="name"/>
+            </search>
+            <result>
+                <listview>
+                    <itemlayout>
+                        <attribute name="name"/>
+                    </itemlayout>
+                </listview>
+                <treeview>
+                    <itemlayout>
+                        <attribute name="name"/>
+                    </itemlayout>
+                    <explorable>
+                        <attribute name="states"/>
+                    </explorable>
+                </treeview>
+            </result>
+            <editor>
+                <essentials>
+                    <listlayout>
+                        <attribute name="name" editable="false"/>
+                    </listlayout>
+                </essentials>
+                <tab name="firefly.extension.tab">
+                    <section name="firefly.extension.hash.section">
+                        <listlayout>
+                            <attribute name="states"/>
+                        </listlayout>
+                    </section>
+                </tab>
+            </editor>
+        </organizer>
+        <defaultreference>
+            <itemlayout mode="replace">
+                <attribute name="name"/>
+            </itemlayout>
+        </defaultreference>
+    </type>
+
+    <type name="FireflyExtensionState">
+        <organizer>
+            <search>
+                <condition attribute="extension"/>
+            </search>
+            <result>
+                <listview>
+                    <itemlayout>
+                        <attribute name="extension"/>
+                        <attribute name="creationtime"/>
+                    </itemlayout>
+                </listview>
+            </result>
+            <editor>
+                <essentials>
+                    <listlayout>
+                        <attribute name="extension" editable="false"/>
+                        <attribute name="creationtime" editable="false"/>
+                    </listlayout>
+                </essentials>
+                <tab name="firefly.extension.tab">
+                    <section name="firefly.extension.hash.section">
+                        <listlayout>
+                            <attribute name="itemsDefinitionHash"/>
+                            <attribute name="hmcDefinitionHash"/>
+                        </listlayout>
+                    </section>
+                </tab>
+            </editor>
+        </organizer>
+    </type>
+</configuration>

@@ -1,0 +1,8 @@
+classes
+gensrc
+bin
+.settings
+.externalToolBuilders
+.classpath
+.pmd
+.springBeans

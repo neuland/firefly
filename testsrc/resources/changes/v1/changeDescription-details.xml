@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changeDescription xmlns="http://firefly.neuland-bfi.de/v1">
+    <beanShell author="jUnit" id="1" file="junit.java"/>
+    <beanShell author="jUnit" id="2">
+        print(ctx.getBeanDefinitionNames());
+    </beanShell>
+</changeDescription>
