@@ -17,13 +17,12 @@
 1. git clone https://github.com/neuland/firefly.git
 
 2. Add the path to firefly into your `localextensions.xml` (in Hybris config folder):
-
-```xml
+ ```xml
     <extension dir="${HYBRIS_BIN_DIR}/firefly"/>
-```
-3. Configure firefly in your `local.properties` (in Hybris config folder):
+ ```
 
-```properties
+3. Configure firefly in your `local.properties` (in Hybris config folder):
+ ```properties
     # Start update on system start automatically.
     firefly.migrationOnStartup=true
     
@@ -31,7 +30,7 @@
     # has been used during an update before. Use this on your local dev enviroment to prefent updates 
     # after branch change.
     firefly.relaxedMode=false
-```
+ ```
 
 4. Build hybris and start
 
