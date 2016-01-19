@@ -21,7 +21,18 @@
 ```xml
     <extension dir="${HYBRIS_BIN_DIR}/firefly"/>
 ```
+3. Configure firefly in your `local.properties` (in Hybris config folder):
 
-3. Build hybris and start
+```properties
+    # Start update on system start automatically.
+    firefly.migrationOnStartup=true
+    
+    # If set to true, no update will be triggered if current version of the items.xml or hmc.xml 
+    # has been used during an update before. Use this on your local dev enviroment to prefent updates 
+    # after branch change.
+    firefly.relaxedMode=false
+```
 
-4. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
+4. Build hybris and start
+
+5. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
