@@ -20,8 +20,19 @@
  ```xml
     <extension dir="${HYBRIS_BIN_DIR}/firefly"/>
  ```
-
 3. Configure firefly in your `local.properties` (in Hybris config folder):
+ ```properties
+    # Start update on system start automatically.
+    firefly.migrationOnStartup=false
+ ```
+
+4. Build hybris and start
+
+5. Start the DB update for the last time manually
+
+6. Stop hybris
+
+7. Configure firefly in your `local.properties` (in Hybris config folder):
  ```properties
     # Start update on system start automatically.
     firefly.migrationOnStartup=true
@@ -32,6 +43,6 @@
     firefly.relaxedMode=false
  ```
 
-4. Build hybris and start
+8. start hybris
 
-5. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
+9. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
