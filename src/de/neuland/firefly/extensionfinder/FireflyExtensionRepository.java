@@ -4,6 +4,7 @@ import de.hybris.platform.servicelayer.exceptions.ModelNotFoundException;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
+import de.hybris.platform.servicelayer.search.exceptions.FlexibleSearchException;
 import de.neuland.firefly.model.FireflyExtensionModel;
 import de.neuland.firefly.model.FireflyExtensionStateModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class FireflyExtensionRepository {
         query.addQueryParameter("name", name);
         try {
             return searchService.searchUnique(query);
-        } catch (ModelNotFoundException e) {
+        } catch (ModelNotFoundException | FlexibleSearchException e) {
             throw new FireflyExtensionNotFoundException(name);
         }
     }
