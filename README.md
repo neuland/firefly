@@ -1,5 +1,12 @@
 # Project Firefly
 
+* Perform hybris DB updates automatically on startup if required.
+* Supports the use of feature branches, so a hybris DB is not updated after branch change.
+ 
+## Planned Features
+
+* Tracks DB migrations in your extention and executes them if migration is needed.
+
 ## Prerequisites
 
 * Java VM 1.7+
