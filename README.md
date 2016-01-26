@@ -46,3 +46,7 @@
 8. start hybris
 
 9. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
+
+# Documentation
+
+Read more in the Wiki (https://github.com/neuland/firefly/wiki) 
