@@ -1,13 +1,12 @@
 package de.neuland.firefly;
 
 import de.hybris.platform.core.Initialization;
+import de.hybris.platform.core.PK;
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.hmc.jalo.HMCManager;
 import de.hybris.platform.servicelayer.event.EventService;
-import de.hybris.platform.servicelayer.event.events.AbstractEvent;
 import de.hybris.platform.util.JspContext;
 import de.hybris.platform.util.localization.TypeLocalization;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -22,9 +21,9 @@ public class HybrisAdapter {
     private static final Logger LOG = Logger.getLogger(HybrisAdapter.class);
     @Autowired EventService eventService;
 
-    public void updateSystem() throws Exception {
+    public void updateSystem(PK migration) throws Exception {
         doInitialize(true);
-        eventService.publishEvent(new SystemUpdatedEvent(getTenantId()));
+        eventService.publishEvent(new SystemUpdatedEvent(getTenantId(), migration));
     }
 
     private void doInitialize(boolean update) throws Exception {
@@ -47,9 +46,9 @@ public class HybrisAdapter {
         }
     }
 
-    public void clearHmcConfiguration() throws Exception {
+    public void clearHmcConfiguration(PK migration) throws Exception {
         doInitialize(false);
-        eventService.publishEvent(new HmcResetEvent(getTenantId()));
+        eventService.publishEvent(new HmcResetEvent(getTenantId(), migration));
     }
 
     public String getTenantId() {
@@ -60,37 +59,32 @@ public class HybrisAdapter {
      * This event is triggered after a system update is done.
      */
     public static class SystemUpdatedEvent extends TenantEvent {
+        private PK migration;
 
-        SystemUpdatedEvent(String tenantId) {
+        SystemUpdatedEvent(String tenantId, PK migration) {
             super(tenantId);
+            this.migration = migration;
         }
+
+        public PK getMigration() {
+            return migration;
+    }
     }
 
     /**
      * This event is triggered after a hMC reset is done.
      */
     public static class HmcResetEvent extends TenantEvent {
+        private PK migration;
 
-        HmcResetEvent(String tenantId) {
+        HmcResetEvent(String tenantId, PK migration) {
             super(tenantId);
-        }
-    }
-
-    public static class TenantEvent extends AbstractEvent {
-
-        protected String tenantId;
-        TenantEvent(String tenantId) {
-            this.tenantId = tenantId;
-            // This event can only be triggered from der HybrisAdapter.
+            this.migration = migration;
         }
 
-        public String getTenantId() {
-            return tenantId;
+        public PK getMigration() {
+            return migration;
+        }
         }
 
-        @Override public String toString() {
-            return ToStringBuilder.reflectionToString(this);
         }
-
-    }
-}

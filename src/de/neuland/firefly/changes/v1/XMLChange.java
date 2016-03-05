@@ -14,6 +14,7 @@ public abstract class XMLChange {
     private String author;
     private String id;
     private String file;
+    private String description;
     private String changeContent;
 
     @XmlAttribute
@@ -43,6 +44,15 @@ public abstract class XMLChange {
         this.id = id;
     }
 
+    @XmlAttribute
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @XmlValue
     public String getChangeContent() {
         return changeContent;
@@ -51,6 +61,7 @@ public abstract class XMLChange {
     public void setChangeContent(String changeContent) {
         this.changeContent = trimToNull(changeContent);
     }
+
 
     @Override public String toString() {
         return ToStringBuilder.reflectionToString(this);

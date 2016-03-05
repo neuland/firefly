@@ -6,6 +6,7 @@ import java.io.File;
 import java.net.URL;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class TestUtils {
@@ -18,9 +19,15 @@ public class TestUtils {
     }
 
     public static <T> T loadXML(Class<T> type, String xmlFile) {
-        URL currentClassPathFolder = TestUtils.class.getClassLoader().getResource("");
-        T result = XMLUtil.loadXML(type, new File(currentClassPathFolder.getFile(), xmlFile));
+        T result = XMLUtil.loadXML(type, getFileFromClasspath(xmlFile));
         assertNotNull(result);
+        return result;
+    }
+
+    public static File getFileFromClasspath(String filename) {
+        URL currentClassPathFolder = TestUtils.class.getClassLoader().getResource("");
+        File result = new File(currentClassPathFolder.getFile(), filename);
+        assertTrue(result.exists());
         return result;
     }
 }

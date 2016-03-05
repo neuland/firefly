@@ -4,6 +4,7 @@ import de.hybris.bootstrap.config.ExtensionInfo;
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.util.Utilities;
 import de.neuland.firefly.HybrisAdapter;
+import de.neuland.firefly.migration.MigrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +18,7 @@ import java.util.List;
 @Scope("tenant")
 public class FireflySystemFactory {
     @Autowired private FireflyExtensionRepository fireflyExtensionRepository;
+    @Autowired private MigrationRepository migrationRepository;
     @Autowired private HybrisAdapter hybrisAdapter;
     @Autowired private SystemUpdateEventListener systemUpdateEventListener;
     @Autowired private HmcResetEventListener hmcResetEventListener;
@@ -41,9 +43,10 @@ public class FireflySystemFactory {
         FireflyExtension fireflyExtension = new FireflyExtension(extensionInfo.getName(),
                                                                  extensionInfo.getExtensionDirectory(),
                                                                  fireflyExtensionRepository,
+                                                                 migrationRepository,
                                                                  relaxedMode);
-        systemUpdateEventListener.registerFireflyExtension(hybrisAdapter.getTenantId(), fireflyExtension);
-        hmcResetEventListener.registerFireflyExtension(hybrisAdapter.getTenantId(), fireflyExtension);
+        systemUpdateEventListener.registerListener(hybrisAdapter.getTenantId(), fireflyExtension);
+        hmcResetEventListener.registerListener(hybrisAdapter.getTenantId(), fireflyExtension);
         return fireflyExtension;
     }
 }

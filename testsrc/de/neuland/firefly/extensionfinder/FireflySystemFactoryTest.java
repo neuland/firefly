@@ -39,7 +39,7 @@ public class FireflySystemFactoryTest extends ServicelayerTransactionalTest {
         // when
         FireflySystem fireflySystem = fireflySystemFactory.createFireflySystem();
         // then
-        assertTrue(systemUpdateEventListener.isFireflyExtensionRegistered(fireflySystem.getExtensions().get(0)));
+        assertTrue(systemUpdateEventListener.isListenerRegistered(fireflySystem.getExtensions().get(0)));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class FireflySystemFactoryTest extends ServicelayerTransactionalTest {
         // when
         FireflySystem fireflySystem = fireflySystemFactory.createFireflySystem();
         // then
-        assertTrue(hmcResetEventListener.isFireflyExtensionRegistered(fireflySystem.getExtensions().get(0)));
+        assertTrue(hmcResetEventListener.isListenerRegistered(fireflySystem.getExtensions().get(0)));
     }
 
     private FireflyExtension findByName(List<FireflyExtension> extensions, String name) {

@@ -21,11 +21,48 @@
                   generate="true"
                   localized="false"
                   autocreate="true">
-            <sourceElement type="FireflyExtensionState" qualifier="states" cardinality="many" collectiontype="list" ordered="true" >
-                <modifiers  partof="true" write="true" />
+            <sourceElement type="FireflyExtensionState" qualifier="states" cardinality="many" collectiontype="list" ordered="true">
+                <modifiers partof="true" write="true"/>
             </sourceElement>
             <targetElement type="FireflyExtension" qualifier="extension" cardinality="one">
                 <modifiers optional="false"/>
+            </targetElement>
+        </relation>
+
+        <relation code="FireflyExtensionChaneRelation"
+                  generate="true"
+                  localized="false"
+                  autocreate="true">
+            <sourceElement type="FireflyChange" qualifier="changes" cardinality="many" collectiontype="list" ordered="true">
+                <modifiers partof="true" write="false"/>
+            </sourceElement>
+            <targetElement type="FireflyExtension" qualifier="extension" cardinality="one">
+                <modifiers optional="false"/>
+            </targetElement>
+        </relation>
+
+        <relation code="FireflyExtensionStateMigrationRelation"
+                  generate="true"
+                  localized="false"
+                  autocreate="true">
+            <sourceElement type="FireflyMigration" qualifier="migration" cardinality="one">
+                <modifiers optional="true"/>
+                <!--TODO hier umstellen, wenn Logik fertig ist. -->
+            </sourceElement>
+            <targetElement type="FireflyExtensionState" qualifier="states" cardinality="many" collectiontype="list" ordered="true">
+                <modifiers partof="false" write="false"/>
+            </targetElement>
+        </relation>
+
+        <relation code="FireflyChangeMigrationRelation"
+                  generate="true"
+                  localized="false"
+                  autocreate="true">
+            <sourceElement type="FireflyMigration" qualifier="migrations" cardinality="many" collectiontype="list" ordered="true">
+                <modifiers partof="false" write="true"/>
+            </sourceElement>
+            <targetElement type="FireflyChange" qualifier="changes" cardinality="many">
+                <modifiers partof="false" write="true"/>
             </targetElement>
         </relation>
     </relations>
@@ -49,6 +86,18 @@
                 <attribute qualifier="id" type="java.lang.String">
                     <persistence type="property"/>
                     <modifiers optional="false"/>
+                </attribute>
+                <attribute qualifier="description" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+                <attribute qualifier="hash" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+                <attribute qualifier="log" type="FireflyLog">
+                    <persistence type="property"/>
+                    <modifiers optional="true" partof="true"/>
                 </attribute>
             </attributes>
             <indexes>
@@ -95,6 +144,20 @@
                     <modifiers optional="true"/>
                 </attribute>
             </attributes>
+        </itemtype>
+
+        <itemtype code="FireflyLog"
+                  autocreate="true"
+                  generate="true"
+                  extends="Media"
+                  jaloclass="de.neuland.firefly.jalo.FireflyLog"/>
+
+        <itemtype code="FireflyMigration"
+                  autocreate="true"
+                  generate="true"
+                  extends="GenericItem"
+                  jaloclass="de.neuland.firefly.jalo.FireflyMigration">
+            <deployment table="FireflyMigration" typecode="15003"/>
         </itemtype>
     </itemtypes>
 </items>

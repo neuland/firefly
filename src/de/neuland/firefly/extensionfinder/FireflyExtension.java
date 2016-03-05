@@ -1,7 +1,10 @@
 package de.neuland.firefly.extensionfinder;
 
+import de.hybris.platform.core.PK;
+import de.neuland.firefly.migration.MigrationRepository;
 import de.neuland.firefly.model.FireflyExtensionModel;
 import de.neuland.firefly.model.FireflyExtensionStateModel;
+import de.neuland.firefly.model.FireflyMigrationModel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.xml.sax.SAXException;
@@ -25,14 +28,16 @@ import static java.util.Arrays.asList;
  */
 public class FireflyExtension {
     private FireflyExtensionRepository fireflyExtensionRepository;
+    private MigrationRepository migrationRepository;
     private boolean relaxedMode;
     private String name;
     private File rootPath;
 
-    FireflyExtension(String name, File rootPath, FireflyExtensionRepository fireflyExtensionRepository, boolean relaxedMode) {
+    FireflyExtension(String name, File rootPath, FireflyExtensionRepository fireflyExtensionRepository, MigrationRepository migrationRepository, boolean relaxedMode) {
         this.name = name;
         this.rootPath = rootPath;
         this.fireflyExtensionRepository = fireflyExtensionRepository;
+        this.migrationRepository = migrationRepository;
         this.relaxedMode = relaxedMode;
     }
 
@@ -40,7 +45,7 @@ public class FireflyExtension {
         try {
             FireflyExtensionModel fireflyExtensionModel = fireflyExtensionRepository.findByName(name);
             return !containsItemDefinitionHash(getItemsDefinitionHash(),
-                                               relaxedMode ? fireflyExtensionModel.getStates() : asList(getOrCreateLastState(fireflyExtensionModel)));
+                                               relaxedMode ? fireflyExtensionModel.getStates() : asList(getLastState(fireflyExtensionModel)));
         } catch (FireflyExtensionRepository.FireflyExtensionNotFoundException e) {
             return true;
         }
@@ -50,13 +55,14 @@ public class FireflyExtension {
         try {
             FireflyExtensionModel fireflyExtensionModel = fireflyExtensionRepository.findByName(name);
             return !containsHmcDefinitionHash(getHmcDefinitionHash(),
-                                              relaxedMode ? fireflyExtensionModel.getStates() : asList(getOrCreateLastState(fireflyExtensionModel)));
+                                              relaxedMode ? fireflyExtensionModel.getStates() : asList(getLastState(fireflyExtensionModel)));
         } catch (FireflyExtensionRepository.FireflyExtensionNotFoundException e) {
             return true;
         }
     }
 
-    public void onHmcReset() {
+    public void onHmcReset(PK migration) {
+        FireflyMigrationModel migrationModel = migrationRepository.findByPk(migration);
         FireflyExtensionModel fireflyExtensionModel = getOrCreateFireflyExtensionModel();
         FireflyExtensionStateModel lastState = getLastState(fireflyExtensionModel);
         String hmcDefinitionHash = getHmcDefinitionHash();
@@ -64,20 +70,22 @@ public class FireflyExtension {
                                              lastState.getItemsDefinitionHash(),
                                              hmcDefinitionHash)) {
             createState(fireflyExtensionModel,
+                        migrationModel,
                         lastState != null ? lastState.getItemsDefinitionHash() : getItemsDefinitionHash(),
                         getHmcDefinitionHash());
         }
         fireflyExtensionRepository.save(fireflyExtensionModel);
     }
 
-    public void onUpdate() {
+    public void onUpdate(PK migration) {
+        FireflyMigrationModel migrationModel = migrationRepository.findByPk(migration);
         FireflyExtensionModel fireflyExtensionModel = getOrCreateFireflyExtensionModel();
         String itemsDefinitionHash = getItemsDefinitionHash();
         String hmcDefinitionHash = getHmcDefinitionHash();
         if (!equalsHash(getLastState(fireflyExtensionModel),
                         itemsDefinitionHash,
                         hmcDefinitionHash)) {
-            createState(fireflyExtensionModel, itemsDefinitionHash, hmcDefinitionHash);
+            createState(fireflyExtensionModel, migrationModel, itemsDefinitionHash, hmcDefinitionHash);
         }
         fireflyExtensionRepository.save(fireflyExtensionModel);
     }
@@ -148,17 +156,11 @@ public class FireflyExtension {
         return fireflyExtensionModel;
     }
 
-    private FireflyExtensionStateModel getOrCreateLastState(FireflyExtensionModel fireflyExtensionModel) {
-        FireflyExtensionStateModel result = getLastState(fireflyExtensionModel);
-        if (result == null) {
-            result = createState(fireflyExtensionModel, "items", "hmc");
-        }
-        return result;
-    }
-
-    private FireflyExtensionStateModel createState(FireflyExtensionModel fireflyExtensionModel, String itemsDefinitionHash, String hmcDefinitionHash) {
+    private FireflyExtensionStateModel createState(FireflyExtensionModel fireflyExtensionModel, FireflyMigrationModel migrationModel,
+                                                   String itemsDefinitionHash, String hmcDefinitionHash) {
         FireflyExtensionStateModel state = new FireflyExtensionStateModel();
         state.setExtension(fireflyExtensionModel);
+        state.setMigration(migrationModel);
         state.setItemsDefinitionHash(itemsDefinitionHash);
         state.setHmcDefinitionHash(hmcDefinitionHash);
         addState(fireflyExtensionModel, state);

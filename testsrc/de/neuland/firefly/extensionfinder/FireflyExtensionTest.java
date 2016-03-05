@@ -1,5 +1,7 @@
 package de.neuland.firefly.extensionfinder;
 
+import de.hybris.platform.core.PK;
+import de.neuland.firefly.migration.MigrationRepository;
 import de.neuland.firefly.model.FireflyExtensionModel;
 import de.neuland.firefly.model.FireflyExtensionStateModel;
 import org.junit.Before;
@@ -34,8 +36,10 @@ public class FireflyExtensionTest {
     private static final String EXTENSION_WITHOUT_ITEMS_XML = "none";
     private static final String ITEMS_XML_CONTENT = "<items><a>someValue</a><b/></items>";
     private static final String HMC_XML_CONTENT = "<configuration/>";
+    private static final PK MIGRATION = PK.NULL_PK;
     private FireflyExtension fireflyExtension;
     @Mock private FireflyExtensionRepository fireflyExtensionRepository;
+    @Mock private MigrationRepository migrationRepository;
     @Captor ArgumentCaptor<ArrayList<FireflyExtensionStateModel>> statesCaptor;
 
     @Before
@@ -72,7 +76,7 @@ public class FireflyExtensionTest {
     @Test
     public void shouldGetDefaultHmcDefinitionHashIfNoItemsXmlWasFound() throws Exception {
         // given
-        fireflyExtension = new FireflyExtension(EXTENSION_WITHOUT_ITEMS_XML, getTempDirectory(), fireflyExtensionRepository, false);
+        fireflyExtension = new FireflyExtension(EXTENSION_WITHOUT_ITEMS_XML, getTempDirectory(), fireflyExtensionRepository, migrationRepository, false);
         // when
         String resultHash = fireflyExtension.getHmcDefinitionHash();
         // then
@@ -188,7 +192,7 @@ public class FireflyExtensionTest {
         FireflyExtensionModel fireflyExtensionModel = mockExtension();
         given(fireflyExtensionRepository.create(EXTENSION_WITH_ITEMS_XML)).willReturn(fireflyExtensionModel);
         // when
-        fireflyExtension.onUpdate();
+        fireflyExtension.onUpdate(MIGRATION);
         // then
         verify(fireflyExtensionRepository).create(EXTENSION_WITH_ITEMS_XML);
     }
@@ -199,7 +203,7 @@ public class FireflyExtensionTest {
         FireflyExtensionModel fireflyExtensionModel = mockExtension(mockState(null, null));
         given(fireflyExtensionRepository.findByName(EXTENSION_WITH_ITEMS_XML)).willReturn(fireflyExtensionModel);
         // when
-        fireflyExtension.onUpdate();
+        fireflyExtension.onUpdate(MIGRATION);
         // then
         verify(fireflyExtensionModel).setStates(statesCaptor.capture());
         assertEquals(2, statesCaptor.getValue().size());
@@ -213,7 +217,7 @@ public class FireflyExtensionTest {
         FireflyExtensionModel fireflyExtensionModel = mockExtension(mockState(null, null));
         given(fireflyExtensionRepository.findByName(EXTENSION_WITH_ITEMS_XML)).willReturn(fireflyExtensionModel);
         // when
-        fireflyExtension.onUpdate();
+        fireflyExtension.onUpdate(MIGRATION);
         // then
         verify(fireflyExtensionModel).setStates(statesCaptor.capture());
         assertEquals(2, statesCaptor.getValue().size());
@@ -227,7 +231,7 @@ public class FireflyExtensionTest {
         FireflyExtensionModel fireflyExtensionModel = mockExtension(mockState(null, null));
         given(fireflyExtensionRepository.findByName(EXTENSION_WITH_ITEMS_XML)).willReturn(fireflyExtensionModel);
         // when
-        fireflyExtension.onHmcReset();
+        fireflyExtension.onHmcReset(MIGRATION);
         // then
         verify(fireflyExtensionModel).setStates(statesCaptor.capture());
         assertEquals(2, statesCaptor.getValue().size());
@@ -241,7 +245,7 @@ public class FireflyExtensionTest {
         FireflyExtensionModel fireflyExtensionModel = mockExtension(mockState(generateMD5(ITEMS_XML_CONTENT), null));
         given(fireflyExtensionRepository.findByName(EXTENSION_WITH_ITEMS_XML)).willReturn(fireflyExtensionModel);
         // when
-        fireflyExtension.onHmcReset();
+        fireflyExtension.onHmcReset(MIGRATION);
         // then
         verify(fireflyExtensionModel).setStates(statesCaptor.capture());
         assertEquals(2, statesCaptor.getValue().size());
@@ -285,7 +289,7 @@ public class FireflyExtensionTest {
     private FireflyExtension createExtension(String name, boolean relaxedMode) {
         URL currentClassPathFolder = getClass().getClassLoader().getResource("");
         assertNotNull(currentClassPathFolder);
-        return new FireflyExtension(name, new File(currentClassPathFolder.getFile()), fireflyExtensionRepository, relaxedMode);
+        return new FireflyExtension(name, new File(currentClassPathFolder.getFile()), fireflyExtensionRepository, migrationRepository, relaxedMode);
     }
 
     private void givenExtensionIsNotInRepository(String name) throws FireflyExtensionRepository.FireflyExtensionNotFoundException {

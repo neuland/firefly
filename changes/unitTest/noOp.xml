@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changeDescription xmlns="http://firefly.neuland-bfi.de/v1">
+    <beanShell author="jUnit" id="1" description="Ich bin ein BeanShell Änderung">
+        print("Hallo Welt");
+        print(ctx.getBeanDefinitionNames().length);
+    </beanShell>
+    <groovy author="jUnit" id="2" description="Langlaufende Groovy-Änderung"><![CDATA[
+        (1..100).each {
+            print '.'
+            if (it % 10 == 0) {
+                println it
+            }
+            System.sleep(50)
+        }
+    ]]></groovy>
+    <sql author="jUnit" id="3" description="SQL Select-Statement">
+        SELECT COUNT(p_name) AS EXTENSION_COUNT FROM FireflyExtension;
+    </sql>
+    <sql author="jUnit" id="4" description="SQL-Update-Statement">
+        UPDATE FireflyExtension SET p_name = p_name;
+    </sql>
+    <impEx author="jUnit" id="5" description="ImpEx-Änderung"><![CDATA[
+        INSERT_UPDATE FireflyExtension;name[unique=true]
+        ;firefly
+    ]]></impEx>
+</changeDescription>

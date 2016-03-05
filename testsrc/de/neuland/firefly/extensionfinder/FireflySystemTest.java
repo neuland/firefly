@@ -1,6 +1,8 @@
 package de.neuland.firefly.extensionfinder;
 
+import de.hybris.platform.core.PK;
 import de.neuland.firefly.HybrisAdapter;
+import de.neuland.firefly.model.FireflyMigrationModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,23 +11,29 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class FireflySystemTest {
+    public static final PK MIGRATION_PK = PK.fromLong(4711);
     @Mock private FireflyExtension extensionAlice;
     @Mock private FireflyExtension extensionBob;
+    @Mock private FireflyMigrationModel migration;
     @Mock private HybrisAdapter hybrisAdapter;
     private FireflySystem fireflySystem;
 
     @Before
     public void setUp() throws Exception {
+        given(migration.getPk()).willReturn(MIGRATION_PK);
+        given(extensionAlice.getName()).willReturn("Alice");
+        given(extensionBob.getName()).willReturn("Bob");
         fireflySystem = new FireflySystem(hybrisAdapter, Arrays.asList(extensionAlice, extensionBob));
     }
 
@@ -41,9 +49,9 @@ public class FireflySystemTest {
         given(extensionAlice.isUpdateRequired()).willReturn(false);
         given(extensionBob.isUpdateRequired()).willReturn(false);
         // when
-        fireflySystem.update();
+        fireflySystem.update(migration);
         // then
-        verify(hybrisAdapter, never()).updateSystem();
+        verify(hybrisAdapter, never()).updateSystem(MIGRATION_PK);
     }
 
     @Test
@@ -52,9 +60,9 @@ public class FireflySystemTest {
         given(extensionAlice.isHmcResetRequired()).willReturn(false);
         given(extensionBob.isHmcResetRequired()).willReturn(false);
         // when
-        fireflySystem.update();
+        fireflySystem.update(migration);
         // then
-        verify(hybrisAdapter, never()).clearHmcConfiguration();
+        verify(hybrisAdapter, never()).clearHmcConfiguration(MIGRATION_PK);
     }
 
     @Test
@@ -62,9 +70,9 @@ public class FireflySystemTest {
         // given
         given(extensionAlice.isUpdateRequired()).willReturn(true);
         // when
-        fireflySystem.update();
+        fireflySystem.update(migration);
         // then
-        verify(hybrisAdapter).updateSystem();
+        verify(hybrisAdapter).updateSystem(MIGRATION_PK);
     }
 
     @Test
@@ -72,9 +80,9 @@ public class FireflySystemTest {
         // given
         given(extensionAlice.isHmcResetRequired()).willReturn(true);
         // when
-        fireflySystem.update();
+        fireflySystem.update(migration);
         // then
-        verify(hybrisAdapter).clearHmcConfiguration();
+        verify(hybrisAdapter).clearHmcConfiguration(MIGRATION_PK);
     }
 
     @Test
@@ -131,10 +139,28 @@ public class FireflySystemTest {
                 given(extensionBob.isHmcResetRequired()).willReturn(false);
                 return null;
             }
-        }).when(hybrisAdapter).updateSystem();
+        }).when(hybrisAdapter).updateSystem(MIGRATION_PK);
         // when
-        fireflySystem.update();
+        fireflySystem.update(migration);
         // then
-        verify(hybrisAdapter, never()).clearHmcConfiguration();
+        verify(hybrisAdapter, never()).clearHmcConfiguration(any(PK.class));
+    }
+
+    @Test
+    public void shouldGetExtensionPathsForAllExtensions() throws Exception {
+        // when
+        Map<String, File> result = fireflySystem.getExtensionPaths();
+        // then
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void shouldGetExtensionPaths() throws Exception {
+        // given
+        given(extensionAlice.getRootPath()).willReturn(new File("alice"));
+        // when
+        Map<String, File> result = fireflySystem.getExtensionPaths();
+        // then
+        assertTrue(result.values().contains(new File("alice")));
     }
 }

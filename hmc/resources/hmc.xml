@@ -4,9 +4,55 @@
                xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
     <explorertree>
         <group name="firefly">
+            <typeref type="FireflyMigration"/>
             <typeref type="FireflyExtension"/>
+            <typeref type="FireflyChange"/>
         </group>
     </explorertree>
+
+    <type name="FireflyMigration">
+        <organizer>
+            <search>
+                <condition attribute="creationtime"/>
+            </search>
+            <result defaultview="tree">
+                <listview>
+                    <itemlayout>
+                        <attribute name="creationtime"/>
+                    </itemlayout>
+                </listview>
+                <treeview>
+                    <itemlayout>
+                        <attribute name="creationtime"/>
+                    </itemlayout>
+                    <explorable>
+                        <attribute name="states"/>
+                        <attribute name="changes"/>
+                    </explorable>
+                </treeview>
+            </result>
+            <editor>
+                <essentials>
+                    <listlayout>
+                        <attribute name="creationtime" editable="false"/>
+                    </listlayout>
+                </essentials>
+                <tab name="firefly.migration.tab">
+                    <section name="firefly.migration.base.section">
+                        <listlayout>
+                            <attribute name="states" editable="true"/>
+                            <attribute name="changes" editable="true"/>
+                        </listlayout>
+                    </section>
+                </tab>
+            </editor>
+        </organizer>
+        <defaultreference>
+            <itemlayout mode="replace">
+                <attribute name="creationtime"/>
+            </itemlayout>
+        </defaultreference>
+    </type>
 
     <type name="FireflyExtension">
         <organizer>
@@ -35,9 +81,10 @@
                     </listlayout>
                 </essentials>
                 <tab name="firefly.extension.tab">
-                    <section name="firefly.extension.hash.section">
+                    <section name="firefly.extension.base.section">
                         <listlayout>
                             <attribute name="states"/>
+                            <attribute name="changes"/>
                         </listlayout>
                     </section>
                 </tab>
@@ -68,10 +115,11 @@
                     <listlayout>
                         <attribute name="extension" editable="false"/>
                         <attribute name="creationtime" editable="false"/>
+                        <attribute name="migration"/>
                     </listlayout>
                 </essentials>
-                <tab name="firefly.extension.tab">
-                    <section name="firefly.extension.hash.section">
+                <tab name="firefly.extensionstate.tab">
+                    <section name="firefly.extensionstate.hash.section">
                         <listlayout>
                             <attribute name="itemsDefinitionHash"/>
                             <attribute name="hmcDefinitionHash"/>
@@ -80,5 +128,68 @@
                 </tab>
             </editor>
         </organizer>
+    </type>
+
+    <type name="FireflyChange">
+        <organizer>
+            <search autoperform="false">
+                <condition attribute="filename"/>
+                <condition attribute="author"/>
+            </search>
+            <result>
+                <listview>
+                    <itemlayout>
+                        <attribute name="filename" width="300"/>
+                        <attribute name="author" width="100"/>
+                        <attribute name="id" width="100"/>
+                        <attribute name="description" width="500"/>
+                    </itemlayout>
+                </listview>
+                <treeview>
+                    <itemlayout>
+                        <attribute name="filename"/>
+                        <attribute name="author"/>
+                        <attribute name="id"/>
+                        <attribute name="description"/>
+                    </itemlayout>
+                </treeview>
+            </result>
+            <editor>
+                <essentials>
+                    <listlayout>
+                        <attribute name="extension"/>
+                        <attribute name="filename"/>
+                        <attribute name="author"/>
+                        <attribute name="id"/>
+                    </listlayout>
+                </essentials>
+                <tab name="firefly.change.tab">
+                    <section name="firefly.change.base.section">
+                        <listlayout>
+                            <attribute name="creationtime" editable="false"/>
+                            <attribute name="description">
+                                <textareaeditor cols="50" rows="5" />
+                            </attribute>
+                            <attribute name="hash"/>
+                            <attribute name="log" editable="false"/>
+                        </listlayout>
+                    </section>
+                </tab>
+                <tab name="firefly.change.migrations.tab">
+                    <section name="firefly.change.migrations.section">
+                        <listlayout>
+                            <attribute name="migrations"/>
+                        </listlayout>
+                    </section>
+                </tab>
+            </editor>
+        </organizer>
+        <defaultreference>
+            <itemlayout mode="replace">
+                <attribute name="filename"/>
+                <attribute name="author"/>
+                <attribute name="id"/>
+            </itemlayout>
+        </defaultreference>
     </type>
 </configuration>

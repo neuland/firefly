@@ -1,6 +1,7 @@
-package de.neuland.firefly.extensionfinder;
+package de.neuland.firefly;
 
 import de.hybris.platform.servicelayer.event.events.AbstractEvent;
+import de.neuland.firefly.extensionfinder.FireflyExtension;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -30,9 +31,9 @@ public class EventDistributorTest {
     @Test
     public void shouldNotFindRandomListenerAsRegistered() throws Exception {
         // given
-        listener.registerFireflyExtension(TENANT_ID, Mockito.mock(FireflyExtension.class));
+        listener.registerListener(TENANT_ID, Mockito.mock(FireflyExtension.class));
         // when
-        boolean isRegistered = listener.isFireflyExtensionRegistered(extension);
+        boolean isRegistered = listener.isListenerRegistered(extension);
         // then
         assertFalse(isRegistered);
     }
@@ -43,22 +44,22 @@ public class EventDistributorTest {
         FireflyExtension extension1 = Mockito.mock(FireflyExtension.class);
         FireflyExtension extension2 = Mockito.mock(FireflyExtension.class);
         // when
-        listener.registerFireflyExtension(TENANT_ID, extension2);
-        listener.registerFireflyExtension(TENANT_ID, extension1);
+        listener.registerListener(TENANT_ID, extension2);
+        listener.registerListener(TENANT_ID, extension1);
         // then
-        assertTrue(listener.isFireflyExtensionRegistered(extension1));
-        assertTrue(listener.isFireflyExtensionRegistered(extension2));
+        assertTrue(listener.isListenerRegistered(extension1));
+        assertTrue(listener.isListenerRegistered(extension2));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowListenerRegistrationWithoutTenant() throws Exception {
         // when
-        listener.registerFireflyExtension(null, extension);
+        listener.registerListener(null, extension);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowNullListeners() throws Exception {
         // when
-        listener.registerFireflyExtension(TENANT_ID, null);
+        listener.registerListener(TENANT_ID, null);
     }
 }

@@ -1,11 +1,12 @@
 package de.neuland.firefly.extensionfinder;
 
 import de.neuland.firefly.HybrisAdapter;
+import de.neuland.firefly.model.FireflyMigrationModel;
 import org.apache.log4j.Logger;
 import org.springframework.util.Assert;
 
-import java.util.Iterator;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 
 /**
@@ -23,14 +24,15 @@ public class FireflySystem {
         this.extensions = extensions;
     }
 
-    public void update() throws Exception {
+    public void update(FireflyMigrationModel migration) throws Exception {
+        Assert.notNull(migration);
         if (isUpdateRequired()) {
             LOG.info("Starting system update...");
-            hybrisAdapter.updateSystem();
+            hybrisAdapter.updateSystem(migration.getPk());
             LOG.info("...system update done.");
         } else if (isHmcResetRequired()) {
             LOG.info("Clean hMC configuration.");
-            hybrisAdapter.clearHmcConfiguration();
+            hybrisAdapter.clearHmcConfiguration(migration.getPk());
         } else {
             LOG.info("No update required. System is up to date.");
         }
@@ -56,5 +58,13 @@ public class FireflySystem {
 
     List<FireflyExtension> getExtensions() {
         return extensions;
+    }
+
+    public Map<String, File> getExtensionPaths() {
+        Map<String, File> result = new HashMap<>(extensions.size());
+        for (FireflyExtension extension : extensions) {
+            result.put(extension.getName(), extension.getRootPath());
+        }
+        return Collections.unmodifiableMap(result);
     }
 }

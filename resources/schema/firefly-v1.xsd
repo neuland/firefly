@@ -20,7 +20,6 @@
 
     <xsd:complexType name="ChangeDescription">
         <xsd:sequence>
-            <xsd:element name="comment" type="xsd:string" minOccurs="0" maxOccurs="1"/>
             <xsd:choice minOccurs="1" maxOccurs="unbounded">
                 <xsd:element name="groovy" type="Groovy"/>
                 <xsd:element name="beanShell" type="BeanShell"/>
@@ -58,7 +57,12 @@
         <xsd:attribute name="author" type="Author" use="required"/>
         <xsd:attribute name="id" type="ID" use="required"/>
         <xsd:attribute name="file" type="File" use="optional"/>
+        <xsd:attribute name="description" type="Author" use="optional"/>
     </xsd:complexType>
+
+    <xsd:simpleType name="Description">
+        <xsd:restriction base="SimpleString"/>
+    </xsd:simpleType>
 
     <xsd:simpleType name="Author">
         <xsd:restriction base="SimpleString"/>
