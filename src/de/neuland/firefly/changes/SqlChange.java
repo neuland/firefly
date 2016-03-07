@@ -23,7 +23,7 @@ public class SqlChange extends Change {
     @Override void executeChange() throws ChangeExecutionException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PrintStream outputPrintStream = new PrintStream(output);
-        Logger changeLogger = Logger.getLogger(toString());
+        Logger changeLogger = getChangeLogger();
 
         Connection connection = null;
         try {

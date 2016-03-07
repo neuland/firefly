@@ -162,6 +162,12 @@ public abstract class Change {
         return getFile() + ":" + getAuthor() + ":" + getId();
     }
 
+    public Logger getChangeLogger() {
+        int lastIndexOf = getFile().lastIndexOf('.');
+        String fileWithoutSuffix = lastIndexOf > 0 ? getFile().substring(0, lastIndexOf) : getFile();
+        return Logger.getLogger(fileWithoutSuffix + ":" + getAuthor() + ":" + getId());
+    }
+
     private void checkIfChangeIsModified(FireflyChangeModel changeModel) throws ChangeModifiedException {
         if (changeModel.getHash() != null && !MD5Util.generateMD5(changeContent).equals(changeModel.getHash())) {
             throw new ChangeModifiedException(this);

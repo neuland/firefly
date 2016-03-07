@@ -39,7 +39,7 @@ public class GroovyChange extends Change {
     private Map<String, Object> createShellContext(OutputStream output) {
         final Map<String, Object> shellContext = new HashMap<>();
         shellContext.put("ctx", Registry.getApplicationContext());
-        shellContext.put("out", new Log4JPrintStream(Logger.getLogger(toString()), new PrintStream(output)));
+        shellContext.put("out", new Log4JPrintStream(getChangeLogger(), new PrintStream(output)));
         return shellContext;
     }
 }
