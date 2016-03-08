@@ -87,55 +87,46 @@ public class Log4JPrintStream extends PrintStream {
     }
 
     @Override public void println(boolean x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(char x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(int x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(long x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(float x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(double x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(char[] x) {
-//        printCompleteLineAsNeeded();
         print(x);
         logger.log(priority, new String(x));
     }
 
     @Override public void println(String x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }
 
     @Override public void println(Object x) {
-//        printCompleteLineAsNeeded();
         print(x);
         printCompleteLineAsNeeded();
     }

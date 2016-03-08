@@ -6,7 +6,6 @@ import groovy.lang.GroovyShell;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -22,12 +21,14 @@ public class GroovyChange extends Change {
 
     @Override void executeChange() throws ChangeExecutionException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Log4JPrintStream log4JPrintStream = new Log4JPrintStream(getChangeLogger(), new PrintStream(output));
         try {
-            Binding binding = new Binding(createShellContext(output));
+            Binding binding = new Binding(createShellContext(log4JPrintStream));
             new GroovyShell(binding).evaluate(getChangeContent());
         } catch (Exception e) {
             throw new ChangeExecutionException(e, this);
         } finally {
+            log4JPrintStream.close();
             try {
                 setExecutionLog(output.toString("UTF-8").trim());
             } catch (UnsupportedEncodingException e) {
@@ -36,10 +37,10 @@ public class GroovyChange extends Change {
         }
     }
 
-    private Map<String, Object> createShellContext(OutputStream output) {
+    private Map<String, Object> createShellContext(Log4JPrintStream output) {
         final Map<String, Object> shellContext = new HashMap<>();
         shellContext.put("ctx", Registry.getApplicationContext());
-        shellContext.put("out", new Log4JPrintStream(getChangeLogger(), new PrintStream(output)));
+        shellContext.put("out", output);
         return shellContext;
     }
 }
