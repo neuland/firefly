@@ -3,10 +3,9 @@ package de.neuland.firefly;
 import de.hybris.platform.core.Initialization;
 import de.hybris.platform.core.PK;
 import de.hybris.platform.core.Registry;
-import de.hybris.platform.hmc.jalo.HMCManager;
+import de.hybris.platform.regioncache.CacheController;
 import de.hybris.platform.servicelayer.event.EventService;
 import de.hybris.platform.util.JspContext;
-import de.hybris.platform.util.localization.TypeLocalization;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,6 +19,11 @@ import org.springframework.stereotype.Component;
 public class HybrisAdapter {
     private static final Logger LOG = Logger.getLogger(HybrisAdapter.class);
     @Autowired EventService eventService;
+    @Autowired CacheController cacheController;
+
+    public void initFirefly() throws Exception {
+        doInitialize(true);
+    }
 
     public void updateSystem(PK migration) throws Exception {
         doInitialize(true);
@@ -68,7 +72,7 @@ public class HybrisAdapter {
 
         public PK getMigration() {
             return migration;
-    }
+        }
     }
 
     /**
@@ -85,6 +89,6 @@ public class HybrisAdapter {
         public PK getMigration() {
             return migration;
         }
-        }
+    }
 
-        }
+}

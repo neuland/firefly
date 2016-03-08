@@ -18,7 +18,7 @@ public class MigrationRepository {
     }
 
     public FireflyMigrationModel create() {
-        return new FireflyMigrationModel();
+        return modelService.create(FireflyMigrationModel.class);
     }
 
     public void save(FireflyMigrationModel migration) {

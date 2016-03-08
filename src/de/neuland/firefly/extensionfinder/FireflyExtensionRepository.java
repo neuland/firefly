@@ -21,7 +21,7 @@ public class FireflyExtensionRepository {
     @Autowired ModelService modelService;
     @Autowired FlexibleSearchService searchService;
 
-    public FireflyExtensionModel findByName(String name) throws FireflyExtensionNotFoundException {
+    public FireflyExtensionModel findByName(String name) throws FireflyExtensionNotFoundException, FireflyNotInstalledException {
         final FlexibleSearchQuery query = new FlexibleSearchQuery(
                         "SELECT {" + FireflyExtensionModel.PK + "} " +
                         "FROM {" + FireflyExtensionModel._TYPECODE + "} " +
@@ -29,7 +29,9 @@ public class FireflyExtensionRepository {
         query.addQueryParameter("name", name);
         try {
             return searchService.searchUnique(query);
-        } catch (ModelNotFoundException | FlexibleSearchException e) {
+        } catch (FlexibleSearchException e) {
+            throw new FireflyNotInstalledException(e);
+        } catch (ModelNotFoundException e) {
             throw new FireflyExtensionNotFoundException(name);
         }
     }
@@ -44,6 +46,12 @@ public class FireflyExtensionRepository {
 
     public void save(FireflyExtensionModel model) {
         modelService.save(model);
+    }
+
+    public static class FireflyNotInstalledException extends RuntimeException {
+        public FireflyNotInstalledException(Exception e) {
+            super(e);
+        }
     }
 
     public static class FireflyExtensionNotFoundException extends Exception {
