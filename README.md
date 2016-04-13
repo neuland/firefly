@@ -1,6 +1,6 @@
 # Project Firefly
 
-![Firefly Logo](https://raw.githubusercontent.com/neuland/firefly/master/web/webroot/img/logo-bg.svg)
+![Firefly Logo](https://raw.githubusercontent.com/neuland/firefly/master/web/webroot/img/logo-bg.png)
 
 * Perform hybris DB updates automatically on startup if required.
 * Supports the use of feature branches, so a hybris DB is not updated after branch change.
