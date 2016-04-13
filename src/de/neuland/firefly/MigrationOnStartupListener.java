@@ -26,7 +26,7 @@ public class MigrationOnStartupListener extends AbstractEventListener<Applicatio
     @Override protected void onEvent(ApplicationStartupEvent event) {
         //TODO get a list of tenants and the fireflyService-bean for this scope
         if (automaticMigration) {
-            LOG.info("Starting automatic migration after startup.");
+            LOG.debug("Starting automatic migration after startup.");
             fireflyService.migrate();
         } else {
             LOG.debug("Skipping automatic migration. To change this set the parameter 'firefly.migrationOnStartup' to true.");

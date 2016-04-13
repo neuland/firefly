@@ -43,9 +43,9 @@ public class FireflyExtension {
 
     public boolean isUpdateRequired() {
         try {
-            FireflyExtensionModel fireflyExtensionModel = fireflyExtensionRepository.findByName(name);
-            return !containsItemDefinitionHash(getItemsDefinitionHash(),
-                                               relaxedMode ? fireflyExtensionModel.getStates() : asList(getLastState(fireflyExtensionModel)));
+        FireflyExtensionModel fireflyExtensionModel = fireflyExtensionRepository.findByName(name);
+        return !containsItemDefinitionHash(getItemsDefinitionHash(),
+                                           relaxedMode ? fireflyExtensionModel.getStates() : asList(getLastState(fireflyExtensionModel)));
         } catch (FireflyExtensionRepository.FireflyExtensionNotFoundException e) {
             return true;
         }
