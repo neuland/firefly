@@ -27,6 +27,12 @@ public abstract class EventDistributor<T extends AbstractEvent, L> extends Abstr
         listeners.add(listener);
     }
 
+    public void unregisterListener(L listener) {
+        for (Set<L> listeners : registeredListener.values()) {
+            listeners.remove(listener);
+        }
+    }
+
     public boolean isListenerRegistered(L listener) {
         for (Set<L> listeners : registeredListener.values()) {
             if (listeners.contains(listener)) {

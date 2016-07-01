@@ -3,15 +3,21 @@ package de.neuland.firefly;
 import de.hybris.platform.core.Initialization;
 import de.hybris.platform.core.PK;
 import de.hybris.platform.core.Registry;
+import de.hybris.platform.jalo.JaloSession;
+import de.hybris.platform.jalo.JaloSessionFactory;
 import de.hybris.platform.regioncache.CacheController;
 import de.hybris.platform.servicelayer.event.EventService;
+import de.hybris.platform.servicelayer.internal.model.impl.CachingModelService;
 import de.hybris.platform.util.JspContext;
+import de.hybris.platform.util.WebSessionFunctions;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpSession;
 
 
 @Component
@@ -34,6 +40,13 @@ public class HybrisAdapter {
         FireflyJspWriter jspWriter = new FireflyJspWriter();
         try {
             MockHttpServletRequest request = new MockHttpServletRequest();
+//            WebSessionFunctions.setCurrentHttpServletRequest(request);
+//            HttpSession mockHttpSession = WebSessionFunctions.getCurrentHttpSession();
+//            JaloSession jaloSession = JaloSession.getCurrentSession();
+//            LOG.info(jaloSession);
+//            jaloSession.setHttpSessionId(mockHttpSession.getId());
+//            jaloSession.getSessionContext().setAttribute(CachingModelService.USE_BLACK_LIST, Boolean.TRUE);
+
             if (update) {
                 request.addParameter("init", "true");
                 request.addParameter("initmethod", "update");
