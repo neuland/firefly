@@ -4,9 +4,6 @@
 
 * Perform hybris DB updates automatically on startup if required.
 * Supports the use of feature branches, so a hybris DB is not updated after branch change.
- 
-## Planned Features
-
 * Tracks DB migrations in your extention and executes them if migration is needed.
 
 ## Prerequisites
@@ -25,18 +22,6 @@
 3. Configure firefly in your `local.properties` (in Hybris config folder):
  ```properties
     # Start update on system start automatically.
-    firefly.migrationOnStartup=false
- ```
-
-4. Build hybris and start
-
-5. Start the DB update for the last time manually
-
-6. Stop hybris
-
-7. Configure firefly in your `local.properties` (in Hybris config folder):
- ```properties
-    # Start update on system start automatically.
     firefly.migrationOnStartup=true
     
     # If set to true, no update will be triggered if current version of the items.xml or hmc.xml 
@@ -45,9 +30,9 @@
     firefly.relaxedMode=false
  ```
 
-8. start hybris
+4. Build hybris and start
 
-9. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
+5. Access the HMC (Hybris Management Console) to check firefly setup. You should see a Firefly-Node in the tree on the left hand side.
 
 # Documentation
 
