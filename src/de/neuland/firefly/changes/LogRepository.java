@@ -2,8 +2,6 @@ package de.neuland.firefly.changes;
 
 import de.hybris.platform.core.model.ItemModel;
 import de.hybris.platform.servicelayer.media.MediaService;
-import de.hybris.platform.servicelayer.model.ModelService;
-import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.neuland.firefly.model.FireflyChangeModel;
 import de.neuland.firefly.model.FireflyLogModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,6 @@ import java.util.UUID;
 @Repository
 @Scope("tenant")
 public class LogRepository {
-    @Autowired private ModelService modelService;
-    @Autowired private FlexibleSearchService searchService;
     @Autowired private MediaService mediaService;
 
     public FireflyLogModel create(FireflyChangeModel change) {

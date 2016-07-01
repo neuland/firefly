@@ -28,6 +28,13 @@ public class FireflySystemFactory {
         return new FireflySystem(hybrisAdapter, createExtensions());
     }
 
+    public void destroyFireflySystem(FireflySystem fireflySystem) {
+        for (FireflyExtension fireflyExtension : fireflySystem.getExtensions()) {
+            systemUpdateEventListener.unregisterListener(fireflyExtension);
+            hmcResetEventListener.unregisterListener(fireflyExtension);
+        }
+    }
+
     List<FireflyExtension> createExtensions() {
         List<String> extensionNames = Registry.getMasterTenant().getTenantSpecificExtensionNames();
         List<FireflyExtension> result = new ArrayList<>(extensionNames.size());
