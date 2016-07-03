@@ -11,6 +11,10 @@
 * Java VM 1.7+
 * Installed hybris
 
+## Tested with hybris version
+
+* 4.8.11
+
 ## Installation
 
 1. git clone https://github.com/neuland/firefly.git
