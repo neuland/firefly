@@ -55,14 +55,15 @@ public class FireflyService {
                 migration = getOrCreateMigration(migration);
                 changeList.executeChanges(migration);
             }
+            if (migration != null) {
+                Registry.getGlobalApplicationContext().getBean(HybrisAdapter.class).clearJaloCache();
+            }
         } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            if (fireflySystemFactory != null) {
-                fireflySystemFactory.destroyFireflySystem(fireflySystem);
-            }
+            fireflySystemFactory.destroyFireflySystem(fireflySystem);
         }
     }
 

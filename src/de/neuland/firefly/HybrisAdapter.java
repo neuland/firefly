@@ -40,13 +40,6 @@ public class HybrisAdapter {
         FireflyJspWriter jspWriter = new FireflyJspWriter();
         try {
             MockHttpServletRequest request = new MockHttpServletRequest();
-//            WebSessionFunctions.setCurrentHttpServletRequest(request);
-//            HttpSession mockHttpSession = WebSessionFunctions.getCurrentHttpSession();
-//            JaloSession jaloSession = JaloSession.getCurrentSession();
-//            LOG.info(jaloSession);
-//            jaloSession.setHttpSessionId(mockHttpSession.getId());
-//            jaloSession.getSessionContext().setAttribute(CachingModelService.USE_BLACK_LIST, Boolean.TRUE);
-
             if (update) {
                 request.addParameter("init", "true");
                 request.addParameter("initmethod", "update");
@@ -70,6 +63,10 @@ public class HybrisAdapter {
 
     public String getTenantId() {
         return Registry.getCurrentTenant().getTenantID();
+    }
+
+    public void clearJaloCache() {
+        Registry.getCurrentTenant().getCache().clear();
     }
 
     /**
