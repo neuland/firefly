@@ -29,7 +29,7 @@
     firefly.migrationOnStartup=true
     
     # If set to true, no update will be triggered if current version of the items.xml or hmc.xml 
-    # has been used during an update before. Use this on your local dev enviroment to prefent updates 
+    # has been used during an update before. Use this on your local dev environment to prevent updates 
     # after branch change.
     firefly.relaxedMode=false
  ```
