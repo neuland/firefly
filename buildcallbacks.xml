@@ -16,6 +16,14 @@
         </yrun>
     </target>
 
+    <target name="firefly-baseline" description="Sets a baseline for firefly." depends="firefly-tenant">
+        <echo level="info">[Firefly] Setting baseline - a initial database update may be needed to setup firefly</echo>
+        <yrun>
+            new de.neuland.firefly.ant.BaselineAntTask("${tenant}").doPerform();
+            de.hybris.platform.util.RedeployUtilities.shutdown();
+        </yrun>
+    </target>
+
     <target name="firefly-tenant">
         <if>
             <not>

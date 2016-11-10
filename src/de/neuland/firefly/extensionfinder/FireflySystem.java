@@ -38,6 +38,16 @@ public class FireflySystem {
         }
     }
 
+    public void setBaseline(FireflyMigrationModel migration) {
+        for (FireflyExtension extension : extensions) {
+            if (extension.isUpdateRequired()) {
+                extension.onUpdate(migration.getPk());
+            } else if (extension.isHmcResetRequired()) {
+                extension.onHmcReset(migration.getPk());
+            }
+        }
+    }
+
     public boolean isHmcResetRequired() {
         boolean resetRequired = false;
         Iterator<FireflyExtension> extensionIterator = extensions.iterator();

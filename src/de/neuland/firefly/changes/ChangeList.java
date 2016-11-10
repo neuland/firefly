@@ -1,5 +1,6 @@
 package de.neuland.firefly.changes;
 
+import de.neuland.firefly.extensionfinder.FireflyExtensionRepository;
 import de.neuland.firefly.model.FireflyMigrationModel;
 
 import java.util.ArrayList;
@@ -54,6 +55,13 @@ public class ChangeList {
     public void executeChanges(FireflyMigrationModel migration) throws ChangeExecutionException, Change.ChangeModifiedException {
         for (Change change : getChangesThatRequiredExecution()) {
             change.execute(migration);
+        }
+    }
+
+    public void markChangesAsExecuted(FireflyMigrationModel migration) throws Change.ChangeModifiedException, FireflyExtensionRepository.FireflyExtensionNotFoundException {
+        for (Change change : getChangesThatRequiredExecution()) {
+            change.setExecutionLog("Change as been marked as executed.");
+            change.onExecution(migration.getPk());
         }
     }
 }

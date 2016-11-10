@@ -24,20 +24,48 @@ import java.util.List;
 public class FireflyService {
     private static final Logger LOG = Logger.getLogger(FireflyService.class);
 
+    public void baseline() {
+        LOG.info("Setting baseline for tenant " + Registry.getCurrentTenant() + " ...");
+        try {
+            performBaseline();
+        } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
+            installFirefly();
+            performBaseline();
+        }
+        LOG.info("...baseline has been set.");
+    }
+
+    private void performBaseline() throws FireflyExtensionRepository.FireflyNotInstalledException {
+        FireflySystemFactory fireflySystemFactory = Registry.getGlobalApplicationContext().getBean(FireflySystemFactory.class);
+        FireflySystem fireflySystem = fireflySystemFactory.createFireflySystem();
+        try {
+            FireflyMigrationModel migration = null;
+            if (fireflySystem.isUpdateRequired() || fireflySystem.isHmcResetRequired()) {
+                migration = getOrCreateMigration(migration);
+                fireflySystem.setBaseline(migration);
+            }
+            ChangeList changeList = Registry.getGlobalApplicationContext().getBean(ChangeFactory.class).createChangeList();
+            if (!changeList.getChangesThatRequiredExecution().isEmpty()) {
+                migration = getOrCreateMigration(migration);
+                changeList.markChangesAsExecuted(migration);
+            }
+        } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            fireflySystemFactory.destroyFireflySystem(fireflySystem);
+        }
+    }
+
     public void migrate() {
         try {
             LOG.info("Starting migration for tenant " + Registry.getCurrentTenant() + " ...");
             performMigration();
             LOG.info("...migration complete.");
         } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
-            LOG.warn("...Firefly is not installed yet. A update is performed to install firefly.");
-            try {
-                Registry.getGlobalApplicationContext().getBean(HybrisAdapter.class).initFirefly();
-                LOG.info("...Firefly has been installed.");
-                performMigration();
-            } catch (Exception initException) {
-                throw new RuntimeException(initException);
-            }
+            installFirefly();
+            performMigration();
         }
     }
 
@@ -64,6 +92,16 @@ public class FireflyService {
             throw new RuntimeException(e);
         } finally {
             fireflySystemFactory.destroyFireflySystem(fireflySystem);
+        }
+    }
+
+    private void installFirefly() {
+        LOG.warn("...Firefly is not installed yet. A update is performed to install firefly.");
+        try {
+            Registry.getGlobalApplicationContext().getBean(HybrisAdapter.class).initFirefly();
+            LOG.info("...Firefly has been installed.");
+        } catch (Exception initException) {
+            throw new RuntimeException(initException);
         }
     }
 
@@ -105,9 +143,7 @@ public class FireflyService {
         } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
             resultMessage.append("Firefly is not installed yet. A update is required to run simulation.");
         } finally {
-            if (fireflySystemFactory != null) {
-                fireflySystemFactory.destroyFireflySystem(fireflySystem);
-            }
+            fireflySystemFactory.destroyFireflySystem(fireflySystem);
         }
         LOG.info(resultMessage.toString());
         return resultMessage.toString();
