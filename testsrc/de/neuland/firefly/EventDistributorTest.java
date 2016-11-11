@@ -20,10 +20,6 @@ public class EventDistributorTest {
         @Override protected void onEvent(AbstractEvent event) {
             // NO OP
         }
-
-        @Override public void onApplicationEvent(ApplicationEvent applicationEvent) {
-            // NO OP
-        }
     };
     @Mock private FireflyExtension extension;
     @Mock private AbstractEvent event;

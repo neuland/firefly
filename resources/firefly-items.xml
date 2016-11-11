@@ -45,10 +45,7 @@
                   generate="true"
                   localized="false"
                   autocreate="true">
-            <sourceElement type="FireflyMigration" qualifier="migration" cardinality="one">
-                <modifiers optional="true"/>
-                <!--TODO hier umstellen, wenn Logik fertig ist. -->
-            </sourceElement>
+            <sourceElement type="FireflyMigration" qualifier="migration" cardinality="one" />
             <targetElement type="FireflyExtensionState" qualifier="states" cardinality="many" collectiontype="list" ordered="true">
                 <modifiers partof="false" write="false"/>
             </targetElement>
@@ -58,6 +55,7 @@
                   generate="true"
                   localized="false"
                   autocreate="true">
+            <deployment table="FireflyChangeMigRel" typecode="15004" />
             <sourceElement type="FireflyMigration" qualifier="migrations" cardinality="many" collectiontype="list" ordered="true">
                 <modifiers partof="false" write="true"/>
             </sourceElement>

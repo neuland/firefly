@@ -8,7 +8,6 @@ import de.neuland.firefly.model.FireflyChangeModel;
 import de.neuland.firefly.model.FireflyExtensionModel;
 import de.neuland.firefly.model.FireflyMigrationModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -16,7 +15,6 @@ import static java.util.Arrays.asList;
 
 
 @Repository
-@Scope("tenant")
 public class ChangeRepository {
     @Autowired private ModelService modelService;
     @Autowired private FlexibleSearchService searchService;
