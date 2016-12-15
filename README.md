@@ -14,6 +14,8 @@
 ## Tested with hybris version
 
 * 4.8.11
+* 5.1.0.0
+* 5.3
 
 ## Installation
 
