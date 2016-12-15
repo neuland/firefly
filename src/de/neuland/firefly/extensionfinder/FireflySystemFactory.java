@@ -7,7 +7,6 @@ import de.neuland.firefly.HybrisAdapter;
 import de.neuland.firefly.migration.MigrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.List;
 
 
 @Component
-@Scope("tenant")
 public class FireflySystemFactory {
     @Autowired private FireflyExtensionRepository fireflyExtensionRepository;
     @Autowired private MigrationRepository migrationRepository;
