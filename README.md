@@ -4,7 +4,7 @@
 
 * Perform hybris DB updates automatically on startup if required.
 * Supports the use of feature branches, so a hybris DB is not updated after branch change.
-* Tracks DB migrations in your extention and executes them if migration is needed.
+* Tracks DB migrations in your extension and executes them if migration is needed.
 
 ## Prerequisites
 
