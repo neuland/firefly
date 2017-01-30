@@ -75,7 +75,7 @@ public class ChangeFactory {
     private List<? extends Change> readChangeList(String extensionName, File extensionPath, File changeFile) {
         List<Change> result = new ArrayList<>();
 
-        XMLChangeList xmlChangeList = loadXML(XMLChangeList.class, changeFile);
+        XMLChangeList xmlChangeList = loadXML(XMLChangeList.class, "schema/firefly-v1.xsd", changeFile);
         for (XMLChangeReference xmlChangeReference : xmlChangeList.getChangeReferences()) {
             result.addAll(readChangeFile(extensionName, extensionPath, new File(changeFile.getParentFile(), xmlChangeReference.getFile())));
         }
@@ -86,7 +86,7 @@ public class ChangeFactory {
     private List<? extends Change> readChangeFile(String extensionName, File extensionPath, File changeFile) {
         List<Change> result = new ArrayList<>();
 
-        XMLChangeDescription xmlChangeDescription = loadXML(XMLChangeDescription.class, changeFile);
+        XMLChangeDescription xmlChangeDescription = loadXML(XMLChangeDescription.class, "schema/firefly-v1.xsd", changeFile);
         for (XMLChange xmlChange : xmlChangeDescription.getChanges()) {
             String osSpecificFile = extensionPath.getName() + changeFile.getPath().replace(extensionPath.getPath(), "");
             String relativePathChangeFile = osSpecificFile.replace(File.separator, "/");

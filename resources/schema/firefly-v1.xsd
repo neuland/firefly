@@ -1,75 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema
-        xmlns="http://firefly.neuland-bfi.de/v1"
+        xmlns:firefly="http://firefly.neuland-bfi.de/v1"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         targetNamespace="http://firefly.neuland-bfi.de/v1"
         elementFormDefault="qualified"
         version="1.0">
-    <xsd:element name="changeList" type="ChangeList"/>
-    <xsd:element name="changeDescription" type="ChangeDescription"/>
+    <xsd:element name="changeList">
+        <xsd:complexType>
+            <xsd:sequence maxOccurs="unbounded">
+                <xsd:element name="change" type="firefly:ChangeReference" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
 
-    <xsd:complexType name="ChangeList">
-        <xsd:sequence maxOccurs="unbounded">
-            <xsd:element name="change" type="ChangeReference" minOccurs="1" maxOccurs="unbounded"/>
-        </xsd:sequence>
-    </xsd:complexType>
+    <xsd:element name="changeDescription">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice minOccurs="1" maxOccurs="unbounded">
+                    <xsd:element name="groovy" type="firefly:Groovy"/>
+                    <xsd:element name="beanShell" type="firefly:BeanShell"/>
+                    <xsd:element name="impEx" type="firefly:ImpEx"/>
+                    <xsd:element name="sql" type="firefly:SQL"/>
+                    <xsd:element name="precondition" type="firefly:Precondition"/>
+                </xsd:choice>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:key name="preconditionKey">
+            <xsd:selector xpath="firefly:precondition" />
+            <xsd:field xpath="@id" />
+        </xsd:key>
+        <xsd:keyref name="preconditionRef" refer="firefly:preconditionKey">
+            <xsd:selector xpath="firefly:groovy|firefly:beanShell|firefly:impEx|firefly:sql" />
+            <xsd:field xpath="@precondition" />
+        </xsd:keyref>
+    </xsd:element>
 
     <xsd:complexType name="ChangeReference">
         <xsd:attribute name="file" type="xsd:string" use="required"/>
     </xsd:complexType>
 
-    <xsd:complexType name="ChangeDescription">
-        <xsd:sequence>
-            <xsd:choice minOccurs="1" maxOccurs="unbounded">
-                <xsd:element name="groovy" type="Groovy"/>
-                <xsd:element name="beanShell" type="BeanShell"/>
-                <xsd:element name="impEx" type="ImpEx"/>
-                <xsd:element name="sql" type="SQL"/>
-            </xsd:choice>
-        </xsd:sequence>
-    </xsd:complexType>
-
     <xsd:complexType name="Groovy">
         <xsd:complexContent>
-            <xsd:extension base="AbstractChangeType"/>
+            <xsd:extension base="firefly:AbstractChangeType"/>
         </xsd:complexContent>
     </xsd:complexType>
 
     <xsd:complexType name="BeanShell" xml:base="AbstractChangeType">
         <xsd:complexContent>
-            <xsd:extension base="AbstractChangeType"/>
+            <xsd:extension base="firefly:AbstractChangeType"/>
         </xsd:complexContent>
     </xsd:complexType>
 
     <xsd:complexType name="ImpEx" xml:base="AbstractChangeType">
         <xsd:complexContent>
-            <xsd:extension base="AbstractChangeType"/>
+            <xsd:extension base="firefly:AbstractChangeType"/>
         </xsd:complexContent>
     </xsd:complexType>
 
     <xsd:complexType name="SQL" xml:base="AbstractChangeType">
         <xsd:complexContent>
-            <xsd:extension base="AbstractChangeType"/>
+            <xsd:extension base="firefly:AbstractChangeType"/>
         </xsd:complexContent>
     </xsd:complexType>
 
     <xsd:complexType name="AbstractChangeType" mixed="true" xml:base="xsd:string">
-        <xsd:attribute name="author" type="Author" use="required"/>
-        <xsd:attribute name="id" type="ID" use="required"/>
-        <xsd:attribute name="file" type="File" use="optional"/>
-        <xsd:attribute name="description" type="Author" use="optional"/>
+        <xsd:attribute name="author" type="firefly:Author" use="required"/>
+        <xsd:attribute name="id" type="firefly:ID" use="required"/>
+        <xsd:attribute name="file" type="firefly:File" use="optional"/>
+        <xsd:attribute name="description" type="firefly:Author" use="optional"/>
+        <xsd:attribute name="precondition" type="xsd:IDREF" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="Precondition" mixed="true" xml:base="xsd:string">
+        <xsd:attribute name="id" type="xsd:ID" use="required"/>
     </xsd:complexType>
 
     <xsd:simpleType name="Description">
-        <xsd:restriction base="SimpleString"/>
+        <xsd:restriction base="firefly:SimpleString"/>
     </xsd:simpleType>
 
     <xsd:simpleType name="Author">
-        <xsd:restriction base="SimpleString"/>
+        <xsd:restriction base="firefly:SimpleString"/>
     </xsd:simpleType>
 
     <xsd:simpleType name="ID">
-        <xsd:restriction base="SimpleString"/>
+        <xsd:restriction base="firefly:SimpleString"/>
     </xsd:simpleType>
 
     <xsd:simpleType name="SimpleString">
