@@ -6,6 +6,7 @@ import de.neuland.firefly.changes.v1.*;
 import de.neuland.firefly.extensionfinder.FireflyExtensionRepository;
 import de.neuland.firefly.extensionfinder.FireflySystemFactory;
 import de.neuland.firefly.migration.MigrationRepository;
+import de.neuland.firefly.utils.GroovyScriptRunner;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class ChangeFactory {
     @Autowired private LogRepository logRepository;
     @Autowired private FireflyExtensionRepository fireflyExtensionRepository;
     @Autowired private MigrationRepository migrationRepository;
+    @Autowired private GroovyScriptRunner groovyScriptRunner;
 
     public ChangeList createChangeList() {
         final ChangeList changeList = new ChangeList();
@@ -103,18 +105,23 @@ public class ChangeFactory {
                 changeContent = xmlChange.getChangeContent();
             }
 
+            final String precondition = xmlChange.getPrecondition() != null ? xmlChange.getPrecondition().getValue() : null;
+
             Change.ChangeBasic changeBasic = new Change.ChangeBasic(extensionName,
                                                                     relativePathChangeFile,
                                                                     xmlChange.getAuthor(),
                                                                     xmlChange.getId(),
                                                                     xmlChange.getDescription(),
-                                                                    changeContent);
+                                                                    changeContent,
+                                                                    precondition,
+                                                                    xmlChange.getOnPreconditionFail().getPreconditionBehaviour());
             Change.ChangeDependency changeDependency = new Change.ChangeDependency(changeRepository,
                                                                                    logRepository,
                                                                                    fireflyExtensionRepository,
                                                                                    eventService,
                                                                                    hybrisAdapter,
-                                                                                   migrationRepository);
+                                                                                   migrationRepository,
+                                                                                   groovyScriptRunner);
             final Change change;
             if (xmlChange instanceof XMLBeanShell) {
                 change = new BeanShellChange(changeBasic, changeDependency);

@@ -7,9 +7,13 @@ import de.neuland.firefly.extensionfinder.FireflyExtensionRepository;
 import de.neuland.firefly.migration.MigrationRepository;
 import de.neuland.firefly.model.FireflyChangeModel;
 import de.neuland.firefly.model.FireflyMigrationModel;
+import de.neuland.firefly.utils.GroovyScriptRunner;
 import de.neuland.firefly.utils.MD5Util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import static java.lang.Boolean.TRUE;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 
 public abstract class Change {
@@ -20,6 +24,7 @@ public abstract class Change {
     private MigrationRepository migrationRepository;
     private EventService eventService;
     private HybrisAdapter hybrisAdapter;
+    private GroovyScriptRunner groovyScriptRunner;
     private String extensionName;
     private String author;
     private String id;
@@ -29,6 +34,8 @@ public abstract class Change {
     private String file;
     private String description;
     private String changeContent;
+    private String precondition;
+    private PreconditionBehaviour onPreconditionFail;
     private String executionLog;
 
     protected Change(ChangeBasic changeBasic, ChangeDependency changeDependency) {
@@ -38,12 +45,15 @@ public abstract class Change {
         this.eventService = changeDependency.getEventService();
         this.hybrisAdapter = changeDependency.getHybrisAdapter();
         this.migrationRepository = changeDependency.getMigrationRepository();
+        this.groovyScriptRunner = changeDependency.getGroovyScriptRunner();
         this.extensionName = changeBasic.getExtensionName();
         this.file = changeBasic.getFile();
         this.author = changeBasic.getAuthor();
         this.id = changeBasic.getId();
         this.description = changeBasic.getDescription();
         this.changeContent = changeBasic.getChangeContent();
+        this.precondition = changeBasic.getPrecondition();
+        this.onPreconditionFail = changeBasic.getOnPreconditionFail();
     }
 
     public String getExtensionName() {
@@ -80,15 +90,37 @@ public abstract class Change {
         }
     }
 
-    public void execute(FireflyMigrationModel migration) throws ChangeExecutionException, ChangeModifiedException {
+    public void execute(FireflyMigrationModel migration) throws ChangeExecutionException, ChangeModifiedException, PreconditionFailedException {
         try {
             FireflyChangeModel changeModel = changeRepository.findChange(file, author, id);
             checkIfChangeIsModified(changeModel);
         } catch (ChangeRepository.ChangeNotFoundException e) {
-            LOG.info("Executing change " + toString());
-            executeChange();
-            eventService.publishEvent(new ChangeExecutedEvent(hybrisAdapter.getTenantId(), this, migration.getPk()));
+            if (preconditionSuccess()) {
+                LOG.info("Executing change " + toString());
+                executeChange();
+                eventService.publishEvent(new ChangeExecutedEvent(hybrisAdapter.getTenantId(), this, migration.getPk()));
+            } else {
+                switch (onPreconditionFail) {
+                    case CONTINUE:
+                        LOG.debug("Precondition for change " + toString() + " failed. Continue with migration.");
+                        break;
+                    case WARN:
+                        LOG.warn("Precondition for change " + toString() + " failed. Continue with migration.");
+                        break;
+                    case MARK_RAN:
+                        LOG.info("Precondition for change " + toString() + " failed. Mark change as ran.");
+                        this.setExecutionLog("Precondition failed:\n" + precondition);
+                        eventService.publishEvent(new ChangeExecutedEvent(hybrisAdapter.getTenantId(), this, migration.getPk()));
+                        break;
+                    default:
+                        throw new PreconditionFailedException(this);
+                }
+            }
         }
+    }
+
+    private boolean preconditionSuccess() {
+        return isNotBlank(precondition) && TRUE.equals(groovyScriptRunner.execute(this, precondition));
     }
 
     abstract void executeChange() throws ChangeExecutionException;
@@ -119,7 +151,7 @@ public abstract class Change {
         changeModel.setHash(MD5Util.generateMD5(changeContent));
         changeRepository.save(changeModel);
 
-        if (StringUtils.isNotBlank(getExecutionLog())) {
+        if (isNotBlank(getExecutionLog())) {
             changeModel.setLog(logRepository.create(changeModel));
             changeRepository.save(changeModel);
             logRepository.addLog(changeModel.getLog(), getExecutionLog());
@@ -187,15 +219,17 @@ public abstract class Change {
         private final EventService eventService;
         private final HybrisAdapter hybrisAdapter;
         private final MigrationRepository migrationRepository;
+        private final GroovyScriptRunner groovyScriptRunner;
 
         ChangeDependency(ChangeRepository changeRepository, LogRepository logRepository, FireflyExtensionRepository fireflyExtensionRepository, EventService eventService,
-                         HybrisAdapter hybrisAdapter, MigrationRepository migrationRepository) {
+                         HybrisAdapter hybrisAdapter, MigrationRepository migrationRepository, GroovyScriptRunner groovyScriptRunner) {
             this.changeRepository = changeRepository;
             this.logRepository = logRepository;
             this.fireflyExtensionRepository = fireflyExtensionRepository;
             this.eventService = eventService;
             this.hybrisAdapter = hybrisAdapter;
             this.migrationRepository = migrationRepository;
+            this.groovyScriptRunner = groovyScriptRunner;
         }
 
         public ChangeRepository getChangeRepository() {
@@ -221,6 +255,10 @@ public abstract class Change {
         public MigrationRepository getMigrationRepository() {
             return migrationRepository;
         }
+
+        public GroovyScriptRunner getGroovyScriptRunner() {
+            return groovyScriptRunner;
+        }
     }
 
     static class ChangeBasic {
@@ -230,14 +268,20 @@ public abstract class Change {
         private final String id;
         private final String description;
         private final String changeContent;
+        private final String precondition;
+        private final PreconditionBehaviour onPreconditionFail;
 
-        ChangeBasic(String extensionName, String file, String author, String id, String description, String changeContent) {
+        ChangeBasic(String extensionName, String file, String author, String id,
+                    String description, String changeContent, String precondition,
+                    PreconditionBehaviour onPreconditionFail) {
             this.extensionName = extensionName;
             this.file = file;
             this.author = author;
             this.id = id;
             this.description = description;
             this.changeContent = changeContent;
+            this.precondition = precondition;
+            this.onPreconditionFail = onPreconditionFail;
         }
 
         public String getExtensionName() {
@@ -262,6 +306,14 @@ public abstract class Change {
 
         public String getChangeContent() {
             return changeContent;
+        }
+
+        public String getPrecondition() {
+            return precondition;
+        }
+
+        public PreconditionBehaviour getOnPreconditionFail() {
+            return onPreconditionFail;
         }
     }
 }

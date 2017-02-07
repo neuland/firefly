@@ -69,6 +69,7 @@
         <xsd:attribute name="file" type="firefly:File" use="optional"/>
         <xsd:attribute name="description" type="firefly:Author" use="optional"/>
         <xsd:attribute name="precondition" type="xsd:IDREF" use="optional"/>
+        <xsd:attribute name="onPreconditionFail" type="firefly:PreconditionBehaviour" use="optional" default="HALT"/>
     </xsd:complexType>
 
     <xsd:complexType name="Precondition" mixed="true" xml:base="xsd:string">
@@ -96,6 +97,15 @@
     <xsd:simpleType name="File">
         <xsd:restriction base="xsd:string">
             <xsd:maxLength value="512"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="PreconditionBehaviour">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="HALT"/>
+            <xsd:enumeration value="CONTINUE"/>
+            <xsd:enumeration value="MARK_RAN"/>
+            <xsd:enumeration value="WARN"/>
         </xsd:restriction>
     </xsd:simpleType>
 </xsd:schema>
