@@ -10,6 +10,7 @@ import de.neuland.firefly.extensionfinder.FireflySystemFactory;
 import de.neuland.firefly.migration.MigrationRepository;
 import de.neuland.firefly.model.FireflyMigrationModel;
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
  * This service holds the main public interface for the Firefly migration tools.
  */
 @Service
+@Scope("tenant")
 public class FireflyService {
     private static final Logger LOG = Logger.getLogger(FireflyService.class);
 

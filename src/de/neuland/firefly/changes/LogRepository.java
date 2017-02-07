@@ -5,6 +5,7 @@ import de.hybris.platform.servicelayer.media.MediaService;
 import de.neuland.firefly.model.FireflyChangeModel;
 import de.neuland.firefly.model.FireflyLogModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 
 @Repository
+@Scope("tenant")
 public class LogRepository {
     @Autowired private MediaService mediaService;
 

@@ -6,14 +6,13 @@ import de.neuland.firefly.changes.v1.*;
 import de.neuland.firefly.extensionfinder.FireflyExtensionRepository;
 import de.neuland.firefly.extensionfinder.FireflySystemFactory;
 import de.neuland.firefly.migration.MigrationRepository;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -21,6 +20,7 @@ import static de.neuland.firefly.utils.XMLUtil.loadXML;
 
 
 @Component
+@Scope("tenant")
 public class ChangeFactory {
     private static final Logger LOG = Logger.getLogger(ChangeFactory.class);
     @Autowired private FireflySystemFactory fireflySystemFactory;

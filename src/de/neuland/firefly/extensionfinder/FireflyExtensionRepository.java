@@ -8,6 +8,7 @@ import de.hybris.platform.servicelayer.search.exceptions.FlexibleSearchException
 import de.neuland.firefly.model.FireflyExtensionModel;
 import de.neuland.firefly.model.FireflyExtensionStateModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 
 @Repository
+@Scope("tenant")
 public class FireflyExtensionRepository {
     @Autowired ModelService modelService;
     @Autowired FlexibleSearchService searchService;

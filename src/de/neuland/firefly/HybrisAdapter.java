@@ -8,12 +8,14 @@ import de.hybris.platform.servicelayer.event.EventService;
 import de.hybris.platform.util.JspContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@Scope("tenant")
 public class HybrisAdapter {
     private static final Logger LOG = Logger.getLogger(HybrisAdapter.class);
     @Autowired EventService eventService;
