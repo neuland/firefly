@@ -23,4 +23,10 @@
         INSERT_UPDATE FireflyExtension;name[unique=true]
         ;firefly
     ]]></impEx>
+    <sql author="jUnit" id="6" description="Change with precondition" precondition="fireflyContext" onPreconditionFail="MARK_RAN">
+        print("I will be skipped");
+    </sql>
+    <precondition id="fireflyContext">
+        fireflyContext.FIREFLY_JUNIT
+    </precondition>
 </changeDescription>
