@@ -3,6 +3,7 @@ package de.neuland.firefly.changes.v1;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
@@ -16,6 +17,8 @@ public abstract class XMLChange {
     private String file;
     private String description;
     private String changeContent;
+    private XMLPrecondition precondition;
+    private XMLPreconditionBehaviour onPreconditionFail;
 
     @XmlAttribute
     public String getFile() {
@@ -62,6 +65,27 @@ public abstract class XMLChange {
         this.changeContent = trimToNull(changeContent);
     }
 
+    @XmlAttribute @XmlIDREF
+    public XMLPrecondition getPrecondition() {
+        return precondition;
+    }
+
+    public void setPrecondition(XMLPrecondition precondition) {
+        this.precondition = precondition;
+    }
+
+    @XmlAttribute
+    public XMLPreconditionBehaviour getOnPreconditionFail() {
+        if (onPreconditionFail == null) {
+            return XMLPreconditionBehaviour.HALT;
+        } else {
+            return onPreconditionFail;
+        }
+    }
+
+    public void setOnPreconditionFail(XMLPreconditionBehaviour onPreconditionFail) {
+        this.onPreconditionFail = onPreconditionFail;
+    }
 
     @Override public String toString() {
         return ToStringBuilder.reflectionToString(this);

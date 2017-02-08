@@ -6,6 +6,7 @@ import de.neuland.firefly.changes.v1.*;
 import de.neuland.firefly.extensionfinder.FireflyExtensionRepository;
 import de.neuland.firefly.extensionfinder.FireflySystemFactory;
 import de.neuland.firefly.migration.MigrationRepository;
+import de.neuland.firefly.utils.GroovyScriptRunner;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class ChangeFactory {
     @Autowired private LogRepository logRepository;
     @Autowired private FireflyExtensionRepository fireflyExtensionRepository;
     @Autowired private MigrationRepository migrationRepository;
+    @Autowired private GroovyScriptRunner groovyScriptRunner;
 
     public ChangeList createChangeList() {
         final ChangeList changeList = new ChangeList();
@@ -75,7 +77,7 @@ public class ChangeFactory {
     private List<? extends Change> readChangeList(String extensionName, File extensionPath, File changeFile) {
         List<Change> result = new ArrayList<>();
 
-        XMLChangeList xmlChangeList = loadXML(XMLChangeList.class, changeFile);
+        XMLChangeList xmlChangeList = loadXML(XMLChangeList.class, "schema/firefly-v1.xsd", changeFile);
         for (XMLChangeReference xmlChangeReference : xmlChangeList.getChangeReferences()) {
             result.addAll(readChangeFile(extensionName, extensionPath, new File(changeFile.getParentFile(), xmlChangeReference.getFile())));
         }
@@ -86,7 +88,7 @@ public class ChangeFactory {
     private List<? extends Change> readChangeFile(String extensionName, File extensionPath, File changeFile) {
         List<Change> result = new ArrayList<>();
 
-        XMLChangeDescription xmlChangeDescription = loadXML(XMLChangeDescription.class, changeFile);
+        XMLChangeDescription xmlChangeDescription = loadXML(XMLChangeDescription.class, "schema/firefly-v1.xsd", changeFile);
         for (XMLChange xmlChange : xmlChangeDescription.getChanges()) {
             String osSpecificFile = extensionPath.getName() + changeFile.getPath().replace(extensionPath.getPath(), "");
             String relativePathChangeFile = osSpecificFile.replace(File.separator, "/");
@@ -103,18 +105,23 @@ public class ChangeFactory {
                 changeContent = xmlChange.getChangeContent();
             }
 
+            final String precondition = xmlChange.getPrecondition() != null ? xmlChange.getPrecondition().getValue() : null;
+
             Change.ChangeBasic changeBasic = new Change.ChangeBasic(extensionName,
                                                                     relativePathChangeFile,
                                                                     xmlChange.getAuthor(),
                                                                     xmlChange.getId(),
                                                                     xmlChange.getDescription(),
-                                                                    changeContent);
+                                                                    changeContent,
+                                                                    precondition,
+                                                                    xmlChange.getOnPreconditionFail().getPreconditionBehaviour());
             Change.ChangeDependency changeDependency = new Change.ChangeDependency(changeRepository,
                                                                                    logRepository,
                                                                                    fireflyExtensionRepository,
                                                                                    eventService,
                                                                                    hybrisAdapter,
-                                                                                   migrationRepository);
+                                                                                   migrationRepository,
+                                                                                   groovyScriptRunner);
             final Change change;
             if (xmlChange instanceof XMLBeanShell) {
                 change = new BeanShellChange(changeBasic, changeDependency);

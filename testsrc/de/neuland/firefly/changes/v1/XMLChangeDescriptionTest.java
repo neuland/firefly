@@ -8,18 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 
 public class XMLChangeDescriptionTest {
-    private static final String COMMENT = "some change file";
-
-    @Test
-    public void shouldParseComment() throws Exception {
-        // given
-        String xmlFile = "resources/changes/v1/changeDescription.xml";
-        // when
-        XMLChangeDescription changeDescription = TestUtils.loadXML(XMLChangeDescription.class, xmlFile);
-        // then
-        assertEquals(COMMENT, changeDescription.getComment());
-    }
-
     @Test
     public void shouldParseChangeList() throws Exception {
         // given
@@ -35,12 +23,22 @@ public class XMLChangeDescriptionTest {
     }
 
     @Test
+    public void shouldParsePreconditions() throws Exception {
+        // given
+        String xmlFile = "resources/changes/v1/changeDescription-details.xml";
+        // when
+        XMLChangeDescription changeDescription = TestUtils.loadXML(XMLChangeDescription.class, xmlFile);
+        // then
+        assertEquals(1, changeDescription.getPreconditions().size());
+    }
+
+    @Test
     public void shouldOverwriteToString() throws Exception {
         // given
         String xmlFile = "resources/changes/v1/changeDescription.xml";
         // when
         XMLChangeDescription changeDescription = TestUtils.loadXML(XMLChangeDescription.class, xmlFile);
         // then
-        assertTrue(changeDescription.toString().contains(COMMENT));
+        assertTrue(changeDescription.toString().contains("changes"));
     }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <changeDescription xmlns="http://firefly.neuland-bfi.de/v1">
-    <comment>some change file</comment>
     <beanShell author="junit" id="1" file="someFile"/>
     <groovy author="junit" id="2" file="someFile"/>
     <impEx author="junit" id="3" file="someFile"/>

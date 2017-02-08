@@ -11,17 +11,8 @@ import java.util.List;
 
 @XmlRootElement(name = "changeDescription", namespace = "http://firefly.neuland-bfi.de/v1")
 public class XMLChangeDescription {
-    private String comment;
     private List<XMLChange> changes = new ArrayList<>();
-
-    @XmlElement(namespace = "http://firefly.neuland-bfi.de/v1")
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+    private List<XMLPrecondition> preconditions = new ArrayList<>();
 
     @XmlElements({ @XmlElement(name = "beanShell", namespace = "http://firefly.neuland-bfi.de/v1", type = XMLBeanShell.class),
                    @XmlElement(name = "groovy", namespace = "http://firefly.neuland-bfi.de/v1", type = XMLGroovy.class),
@@ -29,6 +20,11 @@ public class XMLChangeDescription {
                    @XmlElement(name = "sql", namespace = "http://firefly.neuland-bfi.de/v1", type = XMLSql.class) })
     public List<XMLChange> getChanges() {
         return changes;
+    }
+
+    @XmlElement(name = "precondition", namespace = "http://firefly.neuland-bfi.de/v1")
+    public List<XMLPrecondition> getPreconditions() {
+        return preconditions;
     }
 
     @Override public String toString() {

@@ -4,6 +4,7 @@ import de.neuland.firefly.TestUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -38,6 +39,36 @@ public class XMLChangeTest {
         XMLChange change = loadXML(xmlFile, 0);
         // then
         assertEquals(FILE, change.getFile());
+    }
+
+    @Test
+    public void shouldParseChangePrecondition() throws Exception {
+        // given
+        String xmlFile = "resources/changes/v1/changeDescription-details.xml";
+        //
+        XMLChange change = loadXML(xmlFile, 1);
+        // then
+        assertNotNull(change.getPrecondition());
+    }
+
+    @Test
+    public void shouldParseChangeOnPreconditionFail() throws Exception {
+        // given
+        String xmlFile = "resources/changes/v1/changeDescription-details.xml";
+        //
+        XMLChange change = loadXML(xmlFile, 1);
+        // then
+        assertEquals(XMLPreconditionBehaviour.MARK_RAN, change.getOnPreconditionFail());
+    }
+
+    @Test
+    public void shoulduseDefaultOnPreconditionFail() throws Exception {
+        // given
+        String xmlFile = "resources/changes/v1/changeDescription-details.xml";
+        //
+        XMLChange change = loadXML(xmlFile, 0);
+        // then
+        assertEquals(XMLPreconditionBehaviour.HALT, change.getOnPreconditionFail());
     }
 
     @Test

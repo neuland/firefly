@@ -5,8 +5,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,11 +18,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.SchemaFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.w3c.dom.Node.COMMENT_NODE;
 import static org.w3c.dom.Node.TEXT_NODE;
 
@@ -44,10 +48,17 @@ public class XMLUtil {
     }
 
     public static <T> T loadXML(Class<T> type, File sourceFile) {
+        return loadXML(type, null, sourceFile);
+    }
+
+    public static <T> T loadXML(Class<T> type, String schemaLocation, File sourceFile) {
         try {
-            JAXBContext context = JAXBContext.newInstance(type);
-            return (T) context.createUnmarshaller().unmarshal(sourceFile);
-        } catch (JAXBException e) {
+            Unmarshaller unmarshaller = JAXBContext.newInstance(type).createUnmarshaller();
+            if (isNotEmpty(schemaLocation)) {
+                unmarshaller.setSchema(SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(type.getClassLoader().getResource(schemaLocation)));
+            }
+            return (T) unmarshaller.unmarshal(sourceFile);
+        } catch (JAXBException | SAXException e) {
             throw new RuntimeException(e);
         }
     }
