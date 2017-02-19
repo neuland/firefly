@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-@Scope("tenant")
+@Scope("prototype")
 public class MigrationRepository {
     @Autowired private ModelService modelService;
 

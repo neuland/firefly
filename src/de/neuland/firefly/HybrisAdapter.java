@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-@Scope("tenant")
+@Scope("prototype")
 public class HybrisAdapter {
     private static final Logger LOG = Logger.getLogger(HybrisAdapter.class);
     @Autowired EventService eventService;

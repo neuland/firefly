@@ -15,7 +15,7 @@ import java.util.UUID;
 
 
 @Repository
-@Scope("tenant")
+@Scope("prototype")
 public class LogRepository {
     @Autowired private MediaService mediaService;
 

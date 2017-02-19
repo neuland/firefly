@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @Component
-@Scope("tenant")
+@Scope("prototype")
 public class FireflySystemFactory {
     @Autowired private FireflyExtensionRepository fireflyExtensionRepository;
     @Autowired private MigrationRepository migrationRepository;

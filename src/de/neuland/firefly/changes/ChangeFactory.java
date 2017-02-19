@@ -21,7 +21,7 @@ import static de.neuland.firefly.utils.XMLUtil.loadXML;
 
 
 @Component
-@Scope("tenant")
+@Scope("prototype")
 public class ChangeFactory {
     private static final Logger LOG = Logger.getLogger(ChangeFactory.class);
     @Autowired private FireflySystemFactory fireflySystemFactory;

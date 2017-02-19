@@ -20,7 +20,7 @@ import java.util.List;
  * This service holds the main public interface for the Firefly migration tools.
  */
 @Service
-@Scope("tenant")
+@Scope("prototype")
 public class FireflyService {
     private static final Logger LOG = Logger.getLogger(FireflyService.class);
 

@@ -16,7 +16,7 @@ import static java.util.Arrays.asList;
 
 
 @Repository
-@Scope("tenant")
+@Scope("prototype")
 public class ChangeRepository {
     @Autowired private ModelService modelService;
     @Autowired private FlexibleSearchService searchService;

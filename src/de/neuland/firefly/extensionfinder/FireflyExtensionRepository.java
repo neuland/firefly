@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 
 @Repository
-@Scope("tenant")
+@Scope("prototype")
 public class FireflyExtensionRepository {
     @Autowired ModelService modelService;
     @Autowired FlexibleSearchService searchService;
