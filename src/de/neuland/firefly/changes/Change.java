@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import static java.lang.Boolean.TRUE;
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 
@@ -120,7 +121,7 @@ public abstract class Change {
     }
 
     private boolean preconditionSuccess() {
-        return isNotBlank(precondition) && TRUE.equals(groovyScriptRunner.execute(this, precondition));
+        return isBlank(precondition) || TRUE.equals(groovyScriptRunner.execute(this, precondition));
     }
 
     abstract void executeChange() throws ChangeExecutionException;
