@@ -26,7 +26,13 @@
     <sql author="jUnit" id="6" description="Change with precondition" precondition="fireflyContext" onPreconditionFail="MARK_RAN">
         print("I will be skipped");
     </sql>
+    <sql author="jUnit" id="7" description="Change with SQL precondition" precondition="sql" onPreconditionFail="MARK_RAN">
+        println 'I will not be skipped'
+    </sql>
     <precondition id="fireflyContext">
         fireflyContext.FIREFLY_JUNIT
+    </precondition>
+    <precondition id="sql">
+        sql.rows("SELECT p_name FROM FireflyExtension WHERE p_name='firefly-junit'").isEmpty()
     </precondition>
 </changeDescription>

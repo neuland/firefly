@@ -2,7 +2,7 @@ package de.neuland.firefly.changes;
 
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.jdbcwrapper.JDBCConnectionPool;
-import de.neuland.firefly.utils.ScriptRunner;
+import de.neuland.firefly.utils.SqlScriptRunner;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -28,7 +28,7 @@ public class SqlChange extends Change {
         Connection connection = null;
         try {
             connection = getConnectionPool().borrowConnection();
-            ScriptRunner scriptRunner = new ScriptRunner(connection, false, true);
+            SqlScriptRunner scriptRunner = new SqlScriptRunner(connection, false, true);
             scriptRunner.setLog(new Log4JPrintStream(changeLogger, Level.INFO, outputPrintStream));
             scriptRunner.setErrorLog(new Log4JPrintStream(changeLogger, Level.ERROR, outputPrintStream));
             scriptRunner.runScript(new StringReader(getChangeContent()));

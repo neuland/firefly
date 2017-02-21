@@ -121,7 +121,7 @@ public abstract class Change {
     }
 
     private boolean preconditionSuccess() {
-        return isBlank(precondition) || TRUE.equals(groovyScriptRunner.execute(this, precondition));
+        return isBlank(precondition) || groovyScriptRunner.evaluate(this, precondition);
     }
 
     abstract void executeChange() throws ChangeExecutionException;
