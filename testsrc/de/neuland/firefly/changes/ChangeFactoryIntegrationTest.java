@@ -18,7 +18,7 @@ public class ChangeFactoryIntegrationTest extends ServicelayerTransactionalTest 
         // when
         ChangeList changeList = changeFactory.createChangeList();
         // then
-        assertTrue(changeList.contains("firefly/changes/jUnit.xml", "jUnit", "1"));
+        assertTrue(changeList.contains("firefly/changes/jUnit.xml", "jUnit", "v2.1"));
     }
 
     @Test
@@ -26,6 +26,6 @@ public class ChangeFactoryIntegrationTest extends ServicelayerTransactionalTest 
         // when
         ChangeList changeList = changeFactory.createChangeList();
         // then
-        assertTrue(changeList.contains("firefly/changes/unitTest/noOp.xml", "jUnit", "2"));
+        assertTrue(changeList.contains("firefly/changes/unitTest/noOp.xml", "jUnit", "v2.2"));
     }
 }

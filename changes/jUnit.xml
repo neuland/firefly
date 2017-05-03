@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <changeDescription xmlns="http://firefly.neuland-bfi.de/v1">
-    <groovy author="jUnit" id="1" file="scripts/beans.groovy" description="Groovy-Änderung mit Verweis auf Datei"/>
+    <groovy author="jUnit" id="v2.1" file="scripts/beans.groovy" description="Groovy-Änderung mit Verweis auf Datei"/>
 </changeDescription>
