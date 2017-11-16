@@ -35,10 +35,10 @@ public class HybrisAdapter {
         try {
             MockHttpServletRequest request = new MockHttpServletRequest();
             if (update) {
-                request.addParameter("init", "true");
                 request.addParameter("initmethod", "update");
                 request.addParameter("essential", "true");
             }
+            request.addParameter("init", "true");
             request.addParameter("default", "false");
             request.addParameter("localizetypes", "true");
             request.addParameter("clearhmc", "true");
