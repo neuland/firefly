@@ -157,5 +157,19 @@
                   jaloclass="de.neuland.firefly.jalo.FireflyMigration">
             <deployment table="FireflyMigration" typecode="15003"/>
         </itemtype>
+
+        <itemtype code="FireflyLock"
+                  autocreate="true"
+                  generate="true"
+                  extends="GenericItem"
+                  jaloclass="de.neuland.firefly.jalo.FireflyLock">
+            <deployment table="FireflyLock" typecode="15005"/>
+            <attributes>
+                <attribute qualifier="clusterNode" type="java.lang.Long">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+            </attributes>
+        </itemtype>
     </itemtypes>
 </items>

@@ -1,5 +1,6 @@
 package de.neuland.firefly;
 
+import com.google.common.base.Optional;
 import de.hybris.platform.core.Registry;
 import de.neuland.firefly.changes.Change;
 import de.neuland.firefly.changes.ChangeFactory;
@@ -7,7 +8,10 @@ import de.neuland.firefly.changes.ChangeList;
 import de.neuland.firefly.extensionfinder.FireflyExtensionRepository;
 import de.neuland.firefly.extensionfinder.FireflySystem;
 import de.neuland.firefly.extensionfinder.FireflySystemFactory;
+import de.neuland.firefly.migration.LockRepository;
+import de.neuland.firefly.migration.LockService;
 import de.neuland.firefly.migration.MigrationRepository;
+import de.neuland.firefly.model.FireflyLockModel;
 import de.neuland.firefly.model.FireflyMigrationModel;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
@@ -37,15 +41,18 @@ public class FireflyService {
 
     private void performBaseline() throws FireflyExtensionRepository.FireflyNotInstalledException {
         FireflySystemFactory fireflySystemFactory = Registry.getGlobalApplicationContext().getBean(FireflySystemFactory.class);
+
         FireflySystem fireflySystem = fireflySystemFactory.createFireflySystem();
         try {
             FireflyMigrationModel migration = null;
             if (fireflySystem.isUpdateRequired() || fireflySystem.isHmcResetRequired()) {
+                Registry.getGlobalApplicationContext().getBean(LockService.class).lock();
                 migration = getOrCreateMigration(migration);
                 fireflySystem.setBaseline(migration);
             }
             ChangeList changeList = Registry.getGlobalApplicationContext().getBean(ChangeFactory.class).createChangeList();
             if (!changeList.getChangesThatRequiredExecution().isEmpty()) {
+                Registry.getGlobalApplicationContext().getBean(LockService.class).lock();
                 migration = getOrCreateMigration(migration);
                 changeList.markChangesAsExecuted(migration);
             }
@@ -54,6 +61,7 @@ public class FireflyService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
+            Registry.getGlobalApplicationContext().getBean(LockService.class).unlock();
             fireflySystemFactory.destroyFireflySystem(fireflySystem);
         }
     }
@@ -75,11 +83,13 @@ public class FireflyService {
         try {
             FireflyMigrationModel migration = null;
             if (fireflySystem.isUpdateRequired() || fireflySystem.isHmcResetRequired()) {
+                Registry.getGlobalApplicationContext().getBean(LockService.class).lock();
                 migration = getOrCreateMigration(migration);
                 fireflySystem.update(migration);
             }
             ChangeList changeList = Registry.getGlobalApplicationContext().getBean(ChangeFactory.class).createChangeList();
             if (!changeList.getChangesThatRequiredExecution().isEmpty()) {
+                Registry.getGlobalApplicationContext().getBean(LockService.class).lock();
                 migration = getOrCreateMigration(migration);
                 changeList.executeChanges(migration);
             }
@@ -91,6 +101,7 @@ public class FireflyService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
+            Registry.getGlobalApplicationContext().getBean(LockService.class).unlock();
             fireflySystemFactory.destroyFireflySystem(fireflySystem);
         }
     }
@@ -120,10 +131,14 @@ public class FireflyService {
         StringBuilder resultMessage = new StringBuilder();
         resultMessage.append("Running simulation: \n");
 
+        LockRepository lockRepository = Registry.getGlobalApplicationContext().getBean(LockRepository.class);
         FireflySystemFactory fireflySystemFactory = Registry.getGlobalApplicationContext().getBean(FireflySystemFactory.class);
         ChangeFactory changeFactory = Registry.getGlobalApplicationContext().getBean(ChangeFactory.class);
         FireflySystem fireflySystem = fireflySystemFactory.createFireflySystem();
         try {
+            Optional<FireflyLockModel> lock = lockRepository.findLock();
+
+            resultMessage.append("- ").append(lock.isPresent() ? "Lock is present from cluster node " + lock.get().getClusterNode() : "No lock present.").append("\n");
             resultMessage.append("- ").append(fireflySystem.isUpdateRequired() ? "System update is required" : "System update is not required").append("\n");
             resultMessage.append("- ").append(fireflySystem.isHmcResetRequired() ? "hMC reset is required" : "hMC reset is not required").append("\n");
 

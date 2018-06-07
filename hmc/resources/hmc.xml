@@ -4,11 +4,45 @@
                xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
     <explorertree>
         <group name="firefly">
+            <typeref type="FireflyLock"/>
             <typeref type="FireflyMigration"/>
             <typeref type="FireflyExtension"/>
             <typeref type="FireflyChange"/>
         </group>
     </explorertree>
+
+    <type name="FireflyLock">
+        <organizer>
+            <search>
+                <condition attribute="creationtime"/>
+                <condition attribute="clusterNode"/>
+            </search>
+            <result>
+                <listview>
+                    <itemlayout>
+                        <attribute name="creationtime"/>
+                        <attribute name="clusterNode"/>
+                    </itemlayout>
+                </listview>
+            </result>
+            <editor>
+                <tab name="firefly.lock.tab">
+                    <section name="firefly.lock.base.section">
+                        <listlayout>
+                            <attribute name="creationtime"/>
+                            <attribute name="clusterNode"/>
+                        </listlayout>
+                    </section>
+                </tab>
+            </editor>
+        </organizer>
+        <defaultreference>
+            <itemlayout mode="replace">
+                <attribute name="creationtime"/>
+                <attribute name="clusterNode"/>
+            </itemlayout>
+        </defaultreference>
+    </type>
 
     <type name="FireflyMigration">
         <organizer>
