@@ -1,48 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <context:component-scan base-package="de.neuland.firefly.rest"/>
 
-	<!-- 
-	 Registering the hybris "tenant" scope 
-	 This is the custom hybris scope that manages the lifetime of a "tenant". 
-	 If you do not deal with tenants ("multimandantenfähigkeit"), then there 
-	 is no need to understand what this is for.  
-	 -->
-	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+    <!--
+     Registering the hybris "tenant" scope
+     This is the custom hybris scope that manages the lifetime of a "tenant".
+     If you do not deal with tenants ("multimandantenfähigkeit"), then there
+     is no need to understand what this is for.
+     -->
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">
             <map>
                 <entry key="tenant" value="de.hybris.platform.spring.TenantScope"/>
             </map>
         </property>
     </bean>
-    
-	<!--  Configure the class to use for jalo session creation -->
-	<!-- <bean id="jalosession"   class="de.hybris.platform.jalo.JaloSessionFactory">
-		<property name="targetClassName" value="de.neuland.firefly.jalo.FireflyJaloSession"/>
-	</bean>-->
 
-	<!-- Spring managed FilterChain for hybris Filter stack -->
-	<bean id="fireflyPlatformFilterChain" class="de.hybris.platform.servicelayer.web.PlatformFilterChain">
-		<constructor-arg>
-			<list>
-				<ref bean="log4jFilter"/>
-				<ref bean="dynamicTenantActivationFilter"/>
-				<ref bean="sessionFilter"/>				
-			</list>
-		</constructor-arg>
-	</bean>	
+    <!--  Configure the class to use for jalo session creation -->
+    <!-- <bean id="jalosession"   class="de.hybris.platform.jalo.JaloSessionFactory">
+        <property name="targetClassName" value="de.neuland.firefly.jalo.FireflyJaloSession"/>
+    </bean>-->
 
-	<!-- 
-	 WARNING: 
-	 Do NOT override hybris managers or items within the web module!
-	 Use always the core spring configuration file (firefly-spring.xml) in
-	 the extensions resources/ directory.
-	 -->
+    <!-- Spring managed FilterChain for hybris Filter stack -->
+    <bean id="fireflyPlatformFilterChain" class="de.hybris.platform.servicelayer.web.PlatformFilterChain">
+        <constructor-arg>
+            <list>
+                <ref bean="log4jFilter"/>
+                <ref bean="dynamicTenantActivationFilter"/>
+                <ref bean="sessionFilter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!--
+     WARNING:
+     Do NOT override hybris managers or items within the web module!
+     Use always the core spring configuration file (firefly-spring.xml) in
+     the extensions resources/ directory.
+     -->
 </beans>

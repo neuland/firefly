@@ -7,13 +7,12 @@
     <display-name>firefly</display-name>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
-    <login-config>
+    <!--login-config>
         <auth-method>BASIC</auth-method>
-    </login-config>
-
+    </login-config-->>
 
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
@@ -27,6 +26,12 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
+
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!--
         Enabling Spring managed Delegating Filter Proxy for hybris Filter Stack.
     -->
@@ -36,14 +41,49 @@
     </filter>
 
     <filter-mapping>
-        <filter-name>characterEncodingFilter</filter-name>
+        <filter-name>fireflyPlatformFilterChain</filter-name>
+        <servlet-name>firefly-api</servlet-name>
+    </filter-mapping>
+
+    <!--
+        Filter that will do initialization work for each web application which include:
+        - Getting the JaloSession from the HttpSession or, if not available, create a new JaloSession
+        - Activate this JaloSession so that calls to JaloSession.getCurrentSession() can be performed.
+        - Iterate through all managers and call the doPreRequest(..) method.
+    -->
+    <filter>
+        <filter-name>InitFilter</filter-name>
+        <filter-class>de.hybris.platform.util.WebServicesInitFilter</filter-class>
+        <!-- GZIP compression of response (default = true) -->
+        <init-param>
+            <param-name>enable.compression</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>tenantIDPattern</param-name>
+            <param-value>;\s*tenantID\s*=\s*(\w+)</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>InitFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--
+        DelegatingFilterProxy is a Spring Framework class which delegates to a filter implementation which is defined as a Spring
+        bean in your application context. In this case, the bean is named "springSecurityFilterChain", which is an internal
+        infrastructure bean created by the namespace to handle web security.
+    -->
+    <!--filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
     <filter-mapping>
-        <filter-name>fireflyPlatformFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <servlet-name>firefly-api</servlet-name>
+    </filter-mapping-->
 
     <!--
         Enabling a Spring web application context with 'session' and 'request' scope.
@@ -71,4 +111,14 @@
     <listener>
         <listener-class>de.neuland.firefly.web.ApplicationListener</listener-class>
     </listener>
+
+    <servlet>
+        <servlet-name>firefly-api</servlet-name>
+        <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>firefly-api</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
 </web-app> 

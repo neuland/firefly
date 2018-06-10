@@ -7,3 +7,5 @@ bin
 .pmd
 .springBeans
 platformhome.properties
+generated-firefly-web-spring.xml
+web/webroot/WEB-INF/lib
