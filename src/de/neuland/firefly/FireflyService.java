@@ -66,14 +66,38 @@ public class FireflyService {
         }
     }
 
+    public class LoggerThread implements Runnable {
+        private boolean run = true;
+
+        @Override public void run() {
+            try {
+                while (run) {
+                    Thread.sleep(10000);
+                    if (run) {
+                        LOG.info("...migration is still running...");
+                    }
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+
+        public void stop() {
+            run = false;
+        }
+    }
+
     public void migrate() {
+        final LoggerThread loggerThread = new LoggerThread();
         try {
             LOG.info("Starting migration for tenant " + Registry.getCurrentTenant() + " ...");
+            new Thread(loggerThread, "FireflyHeartbeat").start();
             performMigration();
             LOG.info("...migration complete.");
         } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
             installFirefly();
             performMigration();
+        } finally {
+            loggerThread.stop();
         }
     }
 
