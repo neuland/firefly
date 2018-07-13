@@ -14,7 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
+import static javax.ws.rs.core.Response.Status.OK;
 
 
 @Controller("lockController-v1")
@@ -53,6 +55,6 @@ public class LockController {
     }
 
     private LockRepository getLockRepository() {
-        return Registry.getGlobalApplicationContext().getBean(LockRepository.class)
+        return Registry.getGlobalApplicationContext().getBean(LockRepository.class);
     }
 }

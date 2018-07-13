@@ -2,6 +2,7 @@ package de.neuland.firefly.migration;
 
 import com.google.common.base.Optional;
 import de.hybris.platform.core.PK;
+import de.hybris.platform.servicelayer.exceptions.AmbiguousIdentifierException;
 import de.hybris.platform.servicelayer.exceptions.ModelNotFoundException;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
@@ -34,6 +35,8 @@ public class LockRepository {
             return Optional.fromNullable((FireflyLockModel) searchService.searchUnique(query));
         } catch (ModelNotFoundException e) {
             return Optional.absent();
+        } catch (AmbiguousIdentifierException e) {
+            throw new RuntimeException("Found more than one lock.", e);
         }
     }
 
