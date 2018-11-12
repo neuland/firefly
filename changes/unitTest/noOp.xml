@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <changeDescription xmlns="http://firefly.neuland-bfi.de/v1">
-    <beanShell author="jUnit" id="v2.1" description="Ich bin ein BeanShell Änderung">
+    <beanShell author="jUnit" id="v3-1" description="Ich bin ein BeanShell Änderung">
         print("Hallo Welt");
         print(ctx.getBeanDefinitionNames().length);
     </beanShell>
-    <groovy author="jUnit" id="v2.2" description="Langlaufende Groovy-Änderung"><![CDATA[
+    <groovy author="jUnit" id="v3-2" description="Langlaufende Groovy-Änderung"><![CDATA[
         (1..100).each {
             print '.'
             if (it % 10 == 0) {
@@ -13,23 +13,23 @@
             System.sleep(50)
         }
     ]]></groovy>
-    <sql author="jUnit" id="v2.3" description="SQL Select-Statement">
+    <sql author="jUnit" id="v3-3" description="SQL Select-Statement">
         SELECT COUNT(p_name) AS EXTENSION_COUNT FROM FireflyExtension;
     </sql>
-    <sql author="jUnit" id="v2.4" description="SQL-Update-Statement">
+    <sql author="jUnit" id="v3-4" description="SQL-Update-Statement">
         UPDATE FireflyExtension SET p_name = p_name;
     </sql>
-    <impEx author="jUnit" id="v2.5" description="ImpEx-Änderung"><![CDATA[
+    <impEx author="jUnit" id="v3-5" description="ImpEx-Änderung"><![CDATA[
         INSERT_UPDATE FireflyExtension;name[unique=true]
         ;firefly
     ]]></impEx>
-    <groovy author="jUnit" id="v2.6.1" description="Change with precondition" precondition="fireflyContext" onPreconditionFail="MARK_RAN">
+    <groovy author="jUnit" id="v3-6" description="Change with precondition" precondition="fireflyContext" onPreconditionFail="MARK_RAN">
         print("I will not be skipped");
     </groovy>
-    <groovy author="jUnit" id="v2.7.1" description="Change with SQL precondition" precondition="sql" onPreconditionFail="MARK_RAN">
+    <groovy author="jUnit" id="v3-7" description="Change with SQL precondition" precondition="sql" onPreconditionFail="MARK_RAN">
         println 'I will not be skipped'
     </groovy>
-    <groovy author="jUnit" id="v2.8.1" description="Change with flex search as precondition" precondition="flex" onPreconditionFail="MARK_RAN">
+    <groovy author="jUnit" id="v3-8" description="Change with flex search as precondition" precondition="flex" onPreconditionFail="MARK_RAN">
         println 'I will not be skipped'
     </groovy>
     <precondition id="fireflyContext">
