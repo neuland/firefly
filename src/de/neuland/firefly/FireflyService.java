@@ -13,6 +13,7 @@ import de.neuland.firefly.migration.LockService;
 import de.neuland.firefly.migration.MigrationRepository;
 import de.neuland.firefly.model.FireflyLockModel;
 import de.neuland.firefly.model.FireflyMigrationModel;
+import de.neuland.firefly.utils.XMLUtil;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -123,7 +124,7 @@ public class FireflyService {
         } catch (FireflyExtensionRepository.FireflyNotInstalledException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            LOG.error("Exception during migration", e);
         } finally {
             Registry.getGlobalApplicationContext().getBean(LockService.class).unlock();
             fireflySystemFactory.destroyFireflySystem(fireflySystem);

@@ -4,7 +4,7 @@ public class ChangeExecutionException extends Exception {
     private Change change;
 
     public ChangeExecutionException(Throwable cause, Change change) {
-        super(cause);
+        super("Error during execution of change " + change, cause);
         this.change = change;
     }
 
