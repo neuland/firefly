@@ -35,14 +35,23 @@ public class HybrisAdapter {
         try {
             MockHttpServletRequest request = new MockHttpServletRequest();
             if (update) {
+                // up to version 5
                 request.addParameter("initmethod", "update");
                 request.addParameter("essential", "true");
+                // version 6
+                request.addParameter("initMethod", "UPDATE");
+                request.addParameter("createEssentialData", "true");
             }
             request.addParameter("init", "true");
             request.addParameter("default", "false");
+            request.addParameter("ALL_EXTENSIONS", "true");
+            // up to version 5
             request.addParameter("localizetypes", "true");
             request.addParameter("clearhmc", "true");
-            request.addParameter("ALL_EXTENSIONS", "true");
+            // version 6
+            request.addParameter("localizeTypes", "true");
+            request.addParameter("clearHMC", "true");
+
             JspContext jspContext = new JspContext(jspWriter, request, new MockHttpServletResponse());
             Initialization.doInitialize(jspContext);
         } finally {

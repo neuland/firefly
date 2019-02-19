@@ -1,17 +1,19 @@
 package de.neuland.firefly;
 
-import de.hybris.platform.servicelayer.event.impl.AbstractEventListener;
 import de.neuland.firefly.web.ApplicationStartupEvent;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 
 @Component
-@Scope("singleton")
-public class MigrationOnStartupListener extends AbstractEventListener<ApplicationStartupEvent> {
+public class MigrationOnStartupListener implements ApplicationListener<ApplicationStartupEvent>, ApplicationContextAware, InitializingBean {
     private static final Logger LOG = Logger.getLogger(MigrationOnStartupListener.class);
     private FireflyService fireflyService;
     private boolean automaticMigration = false;
@@ -23,8 +25,8 @@ public class MigrationOnStartupListener extends AbstractEventListener<Applicatio
         this.automaticMigration = automaticMigration;
     }
 
-    @Override protected void onEvent(ApplicationStartupEvent event) {
-        //TODO get a list of tenants and the fireflyService-bean for this scope
+    @Override
+    public void onApplicationEvent(ApplicationStartupEvent applicationStartupEvent) {
         if (automaticMigration) {
             LOG.debug("Starting automatic migration after startup.");
             fireflyService.migrate();
@@ -32,5 +34,15 @@ public class MigrationOnStartupListener extends AbstractEventListener<Applicatio
             LOG.debug("Skipping automatic migration. To change this set the parameter 'firefly.migrationOnStartup' to true.");
             fireflyService.simulate();
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // do nothing
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        // do nothing
     }
 }

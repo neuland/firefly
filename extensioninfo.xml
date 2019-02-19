@@ -10,7 +10,7 @@
  Information and shall use it only in accordance with the terms of the
  license agreement you entered into with hybris.
 
-  
+
 -->
 <extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
@@ -21,18 +21,18 @@
                managersuperclass="de.hybris.platform.jalo.extension.Extension"
 	           description="Firefly Change Management"
                >
-               
+
 
       <coremodule	packageroot="de.neuland.firefly"
 					manager="de.neuland.firefly.jalo.FireflyManager"
-					generated="true" 
+					generated="true"
 					/>
 
-      <webmodule	jspcompile="false" 
+      <webmodule	jspcompile="false"
 					webroot="/firefly"
 					/>
 
        <hmcmodule extensionclassname="de.neuland.firefly.hmc.FireflyHMCExtension"/>
    </extension>
-      
+
 </extensioninfo>

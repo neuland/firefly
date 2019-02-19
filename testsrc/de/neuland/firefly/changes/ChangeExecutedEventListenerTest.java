@@ -1,11 +1,14 @@
 package de.neuland.firefly.changes;
 
 import de.hybris.platform.core.PK;
+import de.hybris.platform.servicelayer.cluster.ClusterService;
+import de.hybris.platform.servicelayer.tenant.TenantService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.ApplicationContext;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -20,10 +23,17 @@ public class ChangeExecutedEventListenerTest {
     private ChangeExecutedEventListener listener;
     @Mock private Change change;
     @Mock private ChangeExecutedEvent changeExecutedEvent;
+    @Mock private ClusterService clusterService;
+    @Mock private TenantService tenantService;
+    @Mock private ApplicationContext applicationContext;
 
     @Before
     public void setUp() throws Exception {
-        listener = new ChangeExecutedEventListener();
+        listener = new ChangeExecutedEventListener(
+            clusterService,
+            tenantService,
+            applicationContext
+        );
         given(changeExecutedEvent.getTenantId()).willReturn(TENANT_ID);
         given(changeExecutedEvent.getMigration()).willReturn(MIGRATION);
         given(changeExecutedEvent.getChange()).willReturn(change);

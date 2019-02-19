@@ -1,7 +1,9 @@
 package de.neuland.firefly;
 
+import de.hybris.platform.servicelayer.cluster.ClusterService;
 import de.hybris.platform.servicelayer.event.events.AbstractEvent;
 import de.hybris.platform.servicelayer.event.impl.AbstractEventListener;
+import de.hybris.platform.servicelayer.tenant.TenantService;
 import de.hybris.platform.util.WeakHashSet;
 
 import java.util.HashMap;
@@ -13,6 +15,12 @@ import static org.springframework.util.Assert.notNull;
 
 public abstract class EventDistributor<T extends AbstractEvent, L> extends AbstractEventListener<T> {
     private HashMap<String, Set<L>> registeredListener = new HashMap<>();
+
+    public EventDistributor(ClusterService clusterService,
+                            TenantService tenantService) {
+        setClusterService(clusterService);
+        setTenantService(tenantService);
+    }
 
     public void registerListener(String tenantId, L listener) {
         hasText(tenantId);
@@ -48,5 +56,17 @@ public abstract class EventDistributor<T extends AbstractEvent, L> extends Abstr
 
     protected Set<L> getListenersForTenant(String tenantId) {
         return registeredListener.get(tenantId);
+    }
+
+    // overridden to neutralize @Required annotation of method id super class
+    @Override
+    public void setClusterService(ClusterService clusterService) {
+        super.setClusterService(clusterService);
+    }
+
+    // overridden to neutralize @Required annotation of method id super class
+    @Override
+    public void setTenantService(TenantService tenantService) {
+        super.setTenantService(tenantService);
     }
 }
