@@ -9,6 +9,7 @@ hmc/resources/hmc.xsd
 
 generated-firefly-web-spring.xml
 platformhome.properties
+build.xml
 ruleset.xml
 .ruleset
 *testclasses.xml
