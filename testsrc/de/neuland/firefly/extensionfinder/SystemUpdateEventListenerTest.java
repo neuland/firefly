@@ -1,6 +1,8 @@
 package de.neuland.firefly.extensionfinder;
 
 import de.hybris.platform.core.PK;
+import de.hybris.platform.servicelayer.cluster.ClusterService;
+import de.hybris.platform.servicelayer.tenant.TenantService;
 import de.neuland.firefly.HybrisAdapter;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,10 +23,12 @@ public class SystemUpdateEventListenerTest {
     private SystemUpdateEventListener listener;
     @Mock private FireflyExtension extension;
     @Mock private HybrisAdapter.SystemUpdatedEvent systemUpdatedEvent;
+    @Mock private ClusterService clusterService;
+    @Mock private TenantService tenantService;
 
     @Before
     public void setUp() throws Exception {
-        listener = new SystemUpdateEventListener();
+        listener = new SystemUpdateEventListener(clusterService, tenantService);
         given(systemUpdatedEvent.getTenantId()).willReturn(TENANT_ID);
         given(systemUpdatedEvent.getMigration()).willReturn(MIGRATION);
     }

@@ -1,5 +1,7 @@
 package de.neuland.firefly;
 
+import de.hybris.platform.servicelayer.cluster.ClusterService;
+import de.hybris.platform.servicelayer.tenant.TenantService;
 import de.neuland.firefly.web.ApplicationStartupEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,24 +13,29 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MigrationOnStartupListenerTest {
-    @Mock FireflyService fireflyService;
+    @Mock private FireflyService fireflyService;
 
     @Test
-    public void shouldStartAutomaticMigration() throws Exception {
+    public void shouldStartAutomaticMigration() {
         // given
-        MigrationOnStartupListener listener = new MigrationOnStartupListener(fireflyService, true);
+        MigrationOnStartupListener listener = new MigrationOnStartupListener(
+            fireflyService,
+            true);
         // when
-        listener.onEvent(new ApplicationStartupEvent());
+        listener.onApplicationEvent(new ApplicationStartupEvent());
         // then
         verify(fireflyService).migrate();
     }
 
     @Test
-    public void shouldRunSimulation() throws Exception {
+    public void shouldRunSimulation() {
         // given
-        MigrationOnStartupListener listener = new MigrationOnStartupListener(fireflyService, false);
+        MigrationOnStartupListener listener = new MigrationOnStartupListener(
+            fireflyService,
+            false
+        );
         // when
-        listener.onEvent(new ApplicationStartupEvent());
+        listener.onApplicationEvent(new ApplicationStartupEvent());
         // then
         verify(fireflyService).simulate();
     }

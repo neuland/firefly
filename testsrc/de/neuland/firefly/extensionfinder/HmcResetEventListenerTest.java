@@ -1,6 +1,8 @@
 package de.neuland.firefly.extensionfinder;
 
 import de.hybris.platform.core.PK;
+import de.hybris.platform.servicelayer.cluster.ClusterService;
+import de.hybris.platform.servicelayer.tenant.TenantService;
 import de.neuland.firefly.HybrisAdapter;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,10 +22,12 @@ public class HmcResetEventListenerTest {
     private HmcResetEventListener listener;
     @Mock private FireflyExtension extension;
     @Mock private HybrisAdapter.HmcResetEvent hmcResetEvent;
+    @Mock private ClusterService clusterService;
+    @Mock private TenantService tenantService;
 
     @Before
     public void setUp() throws Exception {
-        listener = new HmcResetEventListener();
+        listener = new HmcResetEventListener(clusterService, tenantService);
         given(hmcResetEvent.getTenantId()).willReturn(TENANT_ID);
     }
 

@@ -13,9 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("singleton")
 public class ChangeExecutedEventListener extends EventDistributor<ChangeExecutedEvent, Change> {
-    @Autowired private TenantService tenantService;
-    @Autowired private ClusterService clusterService;
-    @Autowired private ApplicationContext applicationContext;
+
+    @Autowired
+    public ChangeExecutedEventListener(ClusterService clusterService,
+                                       TenantService tenantService,
+                                       ApplicationContext applicationContext) {
+        super(clusterService, tenantService);
+
+        super.setApplicationContext(applicationContext);
+    }
 
     @Override protected void onEvent(ChangeExecutedEvent event) {
         if (!hasListenersForTenant(event.getTenantId())) {
@@ -31,12 +37,5 @@ public class ChangeExecutedEventListener extends EventDistributor<ChangeExecuted
         } catch (FireflyExtensionRepository.FireflyExtensionNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override public void afterPropertiesSet() {
-        super.afterPropertiesSet();
-        super.setTenantService(tenantService);
-        super.setClusterService(clusterService);
-        super.setApplicationContext(applicationContext);
     }
 }

@@ -1,10 +1,28 @@
 classes
+
+# generated
 gensrc
-bin
-.settings
+
+extensioninfo.xsd
+resources/items.xsd
+hmc/resources/hmc.xsd
+
+generated-firefly-web-spring.xml
+platformhome.properties
+build.xml
+ruleset.xml
+.ruleset
+*testclasses.xml
+
+# IntelliJ
+.idea
+out/
+
+# Eclipse
 .externalToolBuilders
 .classpath
 .pmd
+.project
+.settings
 .springBeans
-platformhome.properties
-generated-firefly-web-spring.xml
+bin/

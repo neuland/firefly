@@ -1,6 +1,8 @@
 package de.neuland.firefly;
 
+import de.hybris.platform.servicelayer.cluster.ClusterService;
 import de.hybris.platform.servicelayer.event.events.AbstractEvent;
+import de.hybris.platform.servicelayer.tenant.TenantService;
 import de.neuland.firefly.extensionfinder.FireflyExtension;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +18,11 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class EventDistributorTest {
     private static final String TENANT_ID = "myTestTenant";
-    private EventDistributor listener = new EventDistributor() {
+
+    @Mock private ClusterService clusterService;
+    @Mock private TenantService tenantService;
+
+    private EventDistributor listener = new EventDistributor(clusterService, tenantService) {
         @Override protected void onEvent(AbstractEvent event) {
             // NO OP
         }
