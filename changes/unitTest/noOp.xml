@@ -13,11 +13,11 @@
             System.sleep(50)
         }
     ]]></groovy>
-    <sql author="jUnit" id="v3-3" description="SQL Select-Statement">
-        SELECT COUNT(p_name) AS EXTENSION_COUNT FROM FireflyExtension;
+    <sql author="jUnit" id="v4-3" description="SQL Select-Statement">
+        SELECT COUNT(p_name) AS EXTENSION_COUNT FROM fireflyextension;
     </sql>
-    <sql author="jUnit" id="v3-4" description="SQL-Update-Statement">
-        UPDATE FireflyExtension SET p_name = p_name;
+    <sql author="jUnit" id="v4-4" description="SQL-Update-Statement">
+        UPDATE fireflyextension SET p_name = p_name;
     </sql>
     <impEx author="jUnit" id="v3-5" description="ImpEx-Änderung"><![CDATA[
         INSERT_UPDATE FireflyExtension;name[unique=true]
@@ -36,7 +36,7 @@
         !fireflyContext.FIREFLY_JUNIT
     </precondition>
     <precondition id="sql">
-        sql.rows("SELECT p_name FROM FireflyExtension WHERE p_name='firefly-junit'").isEmpty()
+        sql.rows("SELECT p_name FROM fireflyextension WHERE p_name='firefly-junit'").isEmpty()
     </precondition>
     <precondition id="flex">
         ctx.getBean('flexibleSearchService').search("""
