@@ -3,12 +3,14 @@ package de.neuland.firefly.utils;
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.jdbcwrapper.JDBCConnectionPool;
 import de.neuland.firefly.changes.Change;
+import de.neuland.firefly.changes.GroovyChange;
 import de.neuland.firefly.changes.Log4JPrintStream;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.sql.Sql;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -64,11 +66,13 @@ public class GroovyScriptRunner {
     }
 
     private Map<String, Object> createShellContext(Log4JPrintStream output, Connection connection) {
-        final Map<String, Object> shellContext = new HashMap<>();
-        shellContext.put("ctx", Registry.getApplicationContext());
-        shellContext.put("out", output);
+        ApplicationContext applicationContext = Registry.getApplicationContext();
+
+        final Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, output);
+
         shellContext.put("fireflyContext", fireflyContext);
         shellContext.put("sql", new Sql(connection));
+
         return shellContext;
     }
 
