@@ -59,26 +59,28 @@ public class GroovyChange extends Change {
     }
 
     private static void bindSpringBeans(ApplicationContext applicationContext, Map<String, Object> shellContext) {
-        GenericApplicationContext genericApplicationContext = (GenericApplicationContext) applicationContext;
+        if (applicationContext instanceof GenericApplicationContext) {
+            GenericApplicationContext genericApplicationContext = (GenericApplicationContext) applicationContext;
 
-        for (String beanName : genericApplicationContext.getBeanDefinitionNames()) {
-            BeanDefinition beanDefinition = genericApplicationContext.getBeanDefinition(beanName);
-            if (beanDefinition.isAbstract() || beanName.contains(".")) {
-                continue;
-            }
-            String[] aliases = genericApplicationContext.getAliases(beanName);
-            try {
-                Object bean = applicationContext.getBean(beanName);
-                if (aliases.length > 0) {
-                    for (String alias : aliases) {
-                        shellContext.put(alias, bean);
-                    }
-                } else {
-                    shellContext.put(beanName, bean);
+            for (String beanName : genericApplicationContext.getBeanDefinitionNames()) {
+                BeanDefinition beanDefinition = genericApplicationContext.getBeanDefinition(beanName);
+                if (beanDefinition.isAbstract() || beanName.contains(".")) {
+                    continue;
                 }
-            } catch (Exception e) {
-                LOG.warn(String.format("Failed to bind %s to Groovy script: %s",
-                    beanName, e.getMessage()));
+                String[] aliases = genericApplicationContext.getAliases(beanName);
+                try {
+                    Object bean = applicationContext.getBean(beanName);
+                    if (aliases.length > 0) {
+                        for (String alias : aliases) {
+                            shellContext.put(alias, bean);
+                        }
+                    } else {
+                        shellContext.put(beanName, bean);
+                    }
+                } catch (Exception e) {
+                    LOG.warn(String.format("Failed to bind %s to Groovy script: %s",
+                                           beanName, e.getMessage()));
+                }
             }
         }
     }
