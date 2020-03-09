@@ -1,27 +1,17 @@
 package de.neuland.firefly.changes;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.isA;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GroovyChangeTest {
@@ -41,7 +31,7 @@ public class GroovyChangeTest {
         Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, out);
 
         // then
-        assertThat(shellContext).contains(entry("ctx", applicationContext));
+        assertEquals(shellContext.get("ctx"), applicationContext);
     }
 
     @Test
@@ -50,7 +40,7 @@ public class GroovyChangeTest {
         Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, out);
 
         // then
-        assertThat(shellContext).contains(entry("spring", applicationContext));
+        assertEquals(shellContext.get("spring"), applicationContext);
     }
 
     @Test
@@ -67,10 +57,8 @@ public class GroovyChangeTest {
         Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, out);
 
         // then
-        assertThat(shellContext).contains(
-            entry(bean1.name(), bean1),
-            entry(bean2.name(), bean2)
-        );
+        assertEquals(shellContext.get(bean1.name()), bean1);
+        assertEquals(shellContext.get(bean2.name()), bean2);
     }
 
     @Test
@@ -87,7 +75,7 @@ public class GroovyChangeTest {
         Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, out);
 
         // then
-        assertThat(shellContext).doesNotContainKey("abstractBean");
+        assertFalse(shellContext.containsKey("abstractBean"));
     }
 
     @Test
@@ -104,7 +92,7 @@ public class GroovyChangeTest {
         Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, out);
 
         // then
-        assertThat(shellContext).doesNotContainKey("abstractBean");
+        assertFalse(shellContext.containsKey("abstractBean"));
     }
 
     @Test
@@ -122,8 +110,9 @@ public class GroovyChangeTest {
         Map<String, Object> shellContext = GroovyChange.createShellContext(applicationContext, out);
 
         // then
-        assertThat(shellContext).doesNotContainKey("beanWithAlias");
-        assertThat(shellContext).containsKeys("bean", "beanAlias");
+        assertFalse(shellContext.containsKey("beanWithAlias"));
+        assertTrue(shellContext.containsKey("bean"));
+        assertTrue(shellContext.containsKey("beanAlias"));
     }
 
     private TestBean prepareBean(String name) {
