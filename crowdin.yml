@@ -1,0 +1,3 @@
+files:
+  - source: locales_en.properties
+    translation: '%original_path%/locales_%locale_with_underscore%.%file_extension%'
